@@ -21,7 +21,3 @@ def build():
         print("emsdk not found\nYou can install it from https://github.com/ems\
 cripten-core/emsdk\nIf it is already installed make sure to call the emsdk_env\
 .sh/emsdk_env.bat script or add emsdk to path.")
-
-
-if __name__ == "__main__":
-    build()
