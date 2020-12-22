@@ -38,5 +38,6 @@ setuptools.setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "License :: OSI Approved :: MIT License",
     ],
-    license="MIT"
+    license="MIT",
+    python_requires=">=3.8"
 )
