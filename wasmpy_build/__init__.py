@@ -1,8 +1,8 @@
 import os, platform, subprocess, sys
 
 
-def build(command):
-    command = command[1:]
+def build():
+    command = sys.argv[1:]
 
     # find cpython include files
     include_dir = os.path.join(os.path.dirname(__file__), "include", "cp")
@@ -24,4 +24,4 @@ cripten-core/emsdk\nIf it is already installed make sure to call the emsdk_env\
 
 
 if __name__ == "__main__":
-    build(sys.argv)
+    build()
