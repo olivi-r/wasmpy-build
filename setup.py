@@ -20,9 +20,14 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/r-jay-dev/wasmpy-build",
-    packages=["wasmpy-build"],
-    package_data = {
-        "wasmpy-build": recurse_files("wasmpy-build/include")
+    packages=["wasmpy_build"],
+    package_data={
+        "wasmpy_build": recurse_files("wasmpy_build/include")
+    },
+    entry_points={
+        "console_scripts": [
+            "wasmpy-build=wasmpy_build:build"
+        ]
     },
     classifiers=[
         "Programming Language :: Python :: 3",
