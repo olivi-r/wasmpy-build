@@ -9,11 +9,14 @@ def build():
     version = "".join(str(i) for i in sys.version_info[:2])
     include_dir += version
 
+    if "-o" not in command:
+        command += ["-o", f"a.out.cp{version}.wasm"]
+
     emcc = "emcc.bat" if platform.system() == "Windows" else "emcc"
     args = [
         emcc, "-Wno-visibility", f"-I{include_dir}",
         "-sSIDE_MODULE", "-sSTANDALONE_WASM", "-DSIZEOF_WCHAR_T",
-    ]
+    ] + [] if "-o" in command else ["-o", f"a.out.cp{version}.wasm"]
     try:
         subprocess.call(args + command)
 
