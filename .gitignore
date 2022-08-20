@@ -1,4 +1,5 @@
 wasmpy_build.egg-info
+wasmpy_build/include/
 __pycache__/
 build/
 dist/
