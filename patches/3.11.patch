@@ -1,0 +1,42 @@
+--- Python.h
++++ Python.h
+@@ -9,7 +9,7 @@
+ 
+ // Include Python header files
+ #include "patchlevel.h"
+-#include "pyconfig.h"
++//#include "pyconfig.h"
+ #include "pymacconfig.h"
+ 
+ #if defined(__sgi) && !defined(_SGI_MP_SOURCE)
+--- internal/pycore_atomic.h
++++ internal/pycore_atomic.h
+@@ -9,7 +9,7 @@ extern "C" {
+ #endif
+ 
+ #include "dynamic_annotations.h"   /* _Py_ANNOTATE_MEMORY_ORDER */
+-#include "pyconfig.h"
++//#include "pyconfig.h"
+ 
+ #ifdef HAVE_STD_ATOMIC
+ #  include <stdatomic.h>
+--- pyport.h
++++ pyport.h
+@@ -1,7 +1,7 @@
+ #ifndef Py_PYPORT_H
+ #define Py_PYPORT_H
+ 
+-#include "pyconfig.h" /* include for defines */
++//#include "pyconfig.h" /* include for defines */
+ 
+ #include <inttypes.h>
+ 
+@@ -598,7 +598,7 @@ extern char * _getpty(int *, int, mode_t, int);
+  * rather than waiting for integer multiplication to trigger bogus
+  * overflows.
+  */
+-#error "LONG_BIT definition appears wrong for platform (bad gcc/glibc config?)."
++//#error "LONG_BIT definition appears wrong for platform (bad gcc/glibc config?)."
+ #endif
+ 
+ #ifdef __cplusplus

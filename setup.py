@@ -13,7 +13,7 @@ def recurse_files(directory):
 
 setuptools.setup(
     name="wasmpy-build",
-    version="0.2.0",
+    version="0.2.1",
     author="Olivia Ryan",
     author_email="olivia.r.dev@gmail.com",
     description="Emscripten compatible build script for CPython C extensions",
@@ -36,6 +36,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: Implementation :: CPython",
         "License :: OSI Approved :: MIT License",
     ],
