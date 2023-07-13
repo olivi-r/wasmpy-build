@@ -61,13 +61,13 @@ def build():
 
     args = [
         f"{sdk_dir}/sdk-{platform.system()}/bin/clang",
-        "--target=wasm32-unknown-wasi",
         f"--sysroot={sdk_dir}/sdk-{platform.system()}/share/wasi-sysroot",
+        "--target=wasm32-wasi-threads",
+        "-pthread",
         "-nostartfiles",
-        "-D_POSIX_THREADS",
-        "-DHAVE_PTHREAD_STUBS",
         "-DSIZEOF_WCHAR_T=2",
         f"-I{include_dir}",
+        "-mexec-model=reactor",
     ] + command
 
     print(" ".join(args))
