@@ -1,1 +1,4 @@
+appdirs
 patch
+requests
+tqdm

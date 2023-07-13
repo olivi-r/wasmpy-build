@@ -1,7 +1,4 @@
-import subprocess
-import shutil
-import patch
-import os
+import os, patch, shutil, subprocess
 
 
 for patch_file in os.listdir("patches"):
