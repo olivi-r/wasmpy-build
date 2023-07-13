@@ -22,5 +22,5 @@ git clone --recurse-submodules https://github.com/olivi-r/wasmpy-build
 cd wasmpy-build
 python -m pip install -r requirements.txt
 python patch_headers.py
-python setup.py install
+python -m pip install .
 ```

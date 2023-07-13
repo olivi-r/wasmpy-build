@@ -37,4 +37,5 @@ setuptools.setup(
     ],
     license="MIT",
     python_requires=">=3.8",
+    install_requires=["appdirs", "patch", "requests", "tqdm"],
 )
