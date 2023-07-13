@@ -20,7 +20,7 @@ pip install wasmpy-build
 ```bash
 git clone --recurse-submodules https://github.com/olivi-r/wasmpy-build
 cd wasmpy-build
-python -m pip install -r requirements.txt
+pip install patch
 python patch_headers.py
 python -m pip install .
 ```
