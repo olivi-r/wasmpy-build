@@ -1,42 +1,20 @@
---- Python.h
-+++ Python.h
-@@ -9,7 +9,7 @@
+--- pyconfig.h
++++ pyconfig.h
+@@ -1613,7 +1613,7 @@
+ #define SIZEOF_INT 4
  
- // Include Python header files
- #include "patchlevel.h"
--#include "pyconfig.h"
-+//#include "pyconfig.h"
- #include "pymacconfig.h"
+ /* The size of `long', as computed by sizeof. */
+-#define SIZEOF_LONG 8
++#define SIZEOF_LONG 4
  
- #if defined(__sgi) && !defined(_SGI_MP_SOURCE)
---- internal/pycore_atomic.h
-+++ internal/pycore_atomic.h
-@@ -9,7 +9,7 @@ extern "C" {
- #endif
+ /* The size of `long double', as computed by sizeof. */
+ #define SIZEOF_LONG_DOUBLE 16
+@@ -1646,7 +1646,7 @@
+ #define SIZEOF_UINTPTR_T 8
  
- #include "dynamic_annotations.h"   /* _Py_ANNOTATE_MEMORY_ORDER */
--#include "pyconfig.h"
-+//#include "pyconfig.h"
+ /* The size of `void *', as computed by sizeof. */
+-#define SIZEOF_VOID_P 8
++#define SIZEOF_VOID_P 4
  
- #ifdef HAVE_STD_ATOMIC
- #  include <stdatomic.h>
---- pyport.h
-+++ pyport.h
-@@ -1,7 +1,7 @@
- #ifndef Py_PYPORT_H
- #define Py_PYPORT_H
- 
--#include "pyconfig.h" /* include for defines */
-+//#include "pyconfig.h" /* include for defines */
- 
- #include <inttypes.h>
- 
-@@ -598,7 +598,7 @@ extern char * _getpty(int *, int, mode_t, int);
-  * rather than waiting for integer multiplication to trigger bogus
-  * overflows.
-  */
--#error "LONG_BIT definition appears wrong for platform (bad gcc/glibc config?)."
-+//#error "LONG_BIT definition appears wrong for platform (bad gcc/glibc config?)."
- #endif
- 
- #ifdef __cplusplus
+ /* The size of `wchar_t', as computed by sizeof. */
+ #define SIZEOF_WCHAR_T 4

@@ -65,9 +65,8 @@ def build():
         "--target=wasm32-wasi-threads",
         "-pthread",
         "-nostartfiles",
-        "-DSIZEOF_WCHAR_T=2",
         f"-I{include_dir}",
-        "-mexec-model=reactor",
+        "-Wl,--no-entry",
     ] + command
 
     print(" ".join(args))

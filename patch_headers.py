@@ -1,14 +1,19 @@
-import os, patch, shutil, subprocess
+import os, shutil, subprocess
+import patch
 
 
 for patch_file in os.listdir("patches"):
     ver = os.path.splitext(patch_file)[0]
     ver_tag = "cp" + "".join(ver.split("."))
 
-    subprocess.check_call(f"git -C cpython checkout {ver}")
+    subprocess.check_call(["git", "-C", "cpython", "checkout", ver])
+    os.chdir(os.path.join(os.path.dirname(__file__), "cpython"))
+    subprocess.check_call(["./configure"])
+    os.chdir(os.path.dirname(__file__))
 
     # copy headers and license
     shutil.copytree("cpython/Include", f"wasmpy_build/include/{ver_tag}")
+    shutil.copy2("cpython/pyconfig.h", f"wasmpy_build/include/{ver_tag}/pyconfig.h")
     shutil.copy2("cpython/LICENSE", f"wasmpy_build/include/{ver_tag}/LICENSE")
 
     # patch headers

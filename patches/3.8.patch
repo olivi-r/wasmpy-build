@@ -1,64 +1,20 @@
---- pymath.h
-+++ pymath.h
-@@ -1,7 +1,7 @@
- #ifndef Py_PYMATH_H
- #define Py_PYMATH_H
+--- pyconfig.h
++++ pyconfig.h
+@@ -1437,7 +1437,7 @@
+ #define SIZEOF_INT 4
  
--#include "pyconfig.h" /* include for defines */
-+//#include "pyconfig.h" /* include for defines */
+ /* The size of `long', as computed by sizeof. */
+-#define SIZEOF_LONG 8
++#define SIZEOF_LONG 4
  
- /**************************************************************************
- Symbols and macros to supply platform-independent interfaces to mathematical
---- pyport.h
-+++ pyport.h
-@@ -1,7 +1,7 @@
- #ifndef Py_PYPORT_H
- #define Py_PYPORT_H
+ /* The size of `long double', as computed by sizeof. */
+ #define SIZEOF_LONG_DOUBLE 16
+@@ -1470,7 +1470,7 @@
+ #define SIZEOF_UINTPTR_T 8
  
--#include "pyconfig.h" /* include for defines */
-+//#include "pyconfig.h" /* include for defines */
+ /* The size of `void *', as computed by sizeof. */
+-#define SIZEOF_VOID_P 8
++#define SIZEOF_VOID_P 4
  
- #include <inttypes.h>
- 
-@@ -723,7 +723,7 @@
-  * rather than waiting for integer multiplication to trigger bogus
-  * overflows.
-  */
--#error "LONG_BIT definition appears wrong for platform (bad gcc/glibc config?)."
-+//#error "LONG_BIT definition appears wrong for platform (bad gcc/glibc config?)."
- #endif
- 
- #ifdef __cplusplus
---- Python.h
-+++ Python.h
-@@ -5,7 +5,7 @@
- /* Include nearly all Python header files */
- 
- #include "patchlevel.h"
--#include "pyconfig.h"
-+//#include "pyconfig.h"
- #include "pymacconfig.h"
- 
- #include <limits.h>
---- pytime.h
-+++ pytime.h
-@@ -2,7 +2,7 @@
- #ifndef Py_PYTIME_H
- #define Py_PYTIME_H
- 
--#include "pyconfig.h" /* include for defines */
-+//#include "pyconfig.h" /* include for defines */
- #include "object.h"
- 
- /**************************************************************************
---- internal/pycore_atomic.h
-+++ internal/pycore_atomic.h
-@@ -10,7 +10,7 @@
- 
- #include "dynamic_annotations.h"
- 
--#include "pyconfig.h"
-+//#include "pyconfig.h"
- 
- #if defined(HAVE_STD_ATOMIC)
- #include <stdatomic.h>
+ /* The size of `wchar_t', as computed by sizeof. */
+ #define SIZEOF_WCHAR_T 4
