@@ -66,7 +66,7 @@ def build():
         "-pthread",
         "-nostartfiles",
         f"-I{include_dir}",
-        "-Wl,--no-entry",
+        "-Wl,--no-entry,-export-dynamic,--allow-undefined",
     ] + command
 
     print(" ".join(args))
