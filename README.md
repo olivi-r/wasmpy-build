@@ -24,3 +24,11 @@ pip install patch
 python patch_headers.py
 python -m pip install .
 ```
+
+# Usage
+
+Simply pass the C or C++ file and any extra arguments straight to the compiler.
+
+```bash
+wasmpy-build my_file.c -o my_file.wasm
+```

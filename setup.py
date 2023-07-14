@@ -16,7 +16,7 @@ def recurse_files(directory):
 
 setuptools.setup(
     name="wasmpy-build",
-    version="0.3.1",
+    version="0.3.2",
     author="Olivia Ryan",
     author_email="olivia.r.dev@gmail.com",
     description="WebAssembly build tool for CPython C extensions",
@@ -37,5 +37,5 @@ setuptools.setup(
     ],
     license="MIT",
     python_requires=">=3.8",
-    install_requires=["appdirs", "patch", "requests", "tqdm"],
+    install_requires=["appdirs", "requests", "tqdm"],
 )
