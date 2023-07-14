@@ -18,3 +18,32 @@
  
  /* The size of `wchar_t', as computed by sizeof. */
  #define SIZEOF_WCHAR_T 4
+--- pyport.h
++++ pyport.h
+@@ -664,7 +664,7 @@
+ #if defined(Py_ENABLE_SHARED) || defined(__CYGWIN__)
+ #       if defined(HAVE_DECLSPEC_DLL)
+ #               if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
+-#                       define PyAPI_FUNC(RTYPE) Py_EXPORTED_SYMBOL RTYPE
++#                       define PyAPI_FUNC(RTYPE) __attribute__((import_module ("capi"))) Py_EXPORTED_SYMBOL RTYPE
+ #                       define PyAPI_DATA(RTYPE) extern Py_EXPORTED_SYMBOL RTYPE
+         /* module init functions inside the core need no external linkage */
+         /* except for Cygwin to handle embedding */
+@@ -680,7 +680,7 @@
+         /* failures similar to those described at the bottom of 4.1: */
+         /* http://docs.python.org/extending/windows.html#a-cookbook-approach */
+ #                       if !defined(__CYGWIN__)
+-#                               define PyAPI_FUNC(RTYPE) Py_IMPORTED_SYMBOL RTYPE
++#                               define PyAPI_FUNC(RTYPE) __attribute__((import_module ("capi"))) Py_IMPORTED_SYMBOL RTYPE
+ #                       endif /* !__CYGWIN__ */
+ #                       define PyAPI_DATA(RTYPE) extern Py_IMPORTED_SYMBOL RTYPE
+         /* module init functions outside the core must be exported */
+@@ -695,7 +695,7 @@
+ 
+ /* If no external linkage macros defined by now, create defaults */
+ #ifndef PyAPI_FUNC
+-#       define PyAPI_FUNC(RTYPE) Py_EXPORTED_SYMBOL RTYPE
++#       define PyAPI_FUNC(RTYPE) __attribute__((import_module ("capi"))) Py_EXPORTED_SYMBOL RTYPE
+ #endif
+ #ifndef PyAPI_DATA
+ #       define PyAPI_DATA(RTYPE) extern Py_EXPORTED_SYMBOL RTYPE

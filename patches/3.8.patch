@@ -1,20 +1,29 @@
---- pyconfig.h
-+++ pyconfig.h
-@@ -1437,7 +1437,7 @@
- #define SIZEOF_INT 4
+--- pyport.h
++++ pyport.h
+@@ -649,7 +649,7 @@
+ #if defined(Py_ENABLE_SHARED) || defined(__CYGWIN__)
+ #       if defined(HAVE_DECLSPEC_DLL)
+ #               if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
+-#                       define PyAPI_FUNC(RTYPE) __declspec(dllexport) RTYPE
++#                       define PyAPI_FUNC(RTYPE) __attribute__((visibility ("default"), import_module ("capi"))) RTYPE
+ #                       define PyAPI_DATA(RTYPE) extern __declspec(dllexport) RTYPE
+         /* module init functions inside the core need no external linkage */
+         /* except for Cygwin to handle embedding */
+@@ -665,7 +665,7 @@
+         /* failures similar to those described at the bottom of 4.1: */
+         /* http://docs.python.org/extending/windows.html#a-cookbook-approach */
+ #                       if !defined(__CYGWIN__)
+-#                               define PyAPI_FUNC(RTYPE) __declspec(dllimport) RTYPE
++#                               define PyAPI_FUNC(RTYPE) __attribute__((visibility ("default"), import_module ("capi"))) RTYPE
+ #                       endif /* !__CYGWIN__ */
+ #                       define PyAPI_DATA(RTYPE) extern __declspec(dllimport) RTYPE
+         /* module init functions outside the core must be exported */
+@@ -680,7 +680,7 @@
  
- /* The size of `long', as computed by sizeof. */
--#define SIZEOF_LONG 8
-+#define SIZEOF_LONG 4
- 
- /* The size of `long double', as computed by sizeof. */
- #define SIZEOF_LONG_DOUBLE 16
-@@ -1470,7 +1470,7 @@
- #define SIZEOF_UINTPTR_T 8
- 
- /* The size of `void *', as computed by sizeof. */
--#define SIZEOF_VOID_P 8
-+#define SIZEOF_VOID_P 4
- 
- /* The size of `wchar_t', as computed by sizeof. */
- #define SIZEOF_WCHAR_T 4
+ /* If no external linkage macros defined by now, create defaults */
+ #ifndef PyAPI_FUNC
+-#       define PyAPI_FUNC(RTYPE) RTYPE
++#       define PyAPI_FUNC(RTYPE) __attribute__((visibility ("default"), import_module ("capi"))) RTYPE
+ #endif
+ #ifndef PyAPI_DATA
+ #       define PyAPI_DATA(RTYPE) extern RTYPE
