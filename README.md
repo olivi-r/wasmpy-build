@@ -26,9 +26,13 @@ python -m pip install .
 ```
 
 # Usage
+Pass the file with any extra arguments to the console scripts:
 
-Simply pass the C or C++ file and any extra arguments straight to the compiler.
-
+### C
 ```bash
 wasmpy-build my_file.c -o my_file.wasm
+```
+### C++
+```bash
+wasmpy-build++ my_file.cpp -o my_file.wasm
 ```

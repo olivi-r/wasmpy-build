@@ -5,7 +5,7 @@ import appdirs, requests, tqdm
 sdk_dir = os.path.join(appdirs.user_data_dir("wasmpy-build", "wasmpy"))
 
 
-def download_sdk():
+def download_sdk(before=None):
     try:
         os.makedirs(sdk_dir)
 
@@ -48,10 +48,11 @@ def download_sdk():
     )
 
     print(f"wasi-sdk installed at: {os.path.join(sdk_dir, 'sdk')}")
-    build()
+    if before is not None:
+        before()
 
 
-def build():
+def buildc():
     command = sys.argv[1:]
 
     # find cpython include files
@@ -75,4 +76,31 @@ def build():
 
     except FileNotFoundError:
         print("wasi-sdk not found")
-        download_sdk()
+        download_sdk(buildc)
+
+
+def buildcpp():
+    command = sys.argv[1:]
+
+    # find cpython include files
+    include_dir = os.path.join(os.path.dirname(__file__), "include", "cp")
+    version = "".join(str(i) for i in sys.version_info[:2])
+    include_dir += version
+
+    args = [
+        f"{sdk_dir}/sdk-{platform.system()}/bin/clang++",
+        f"--sysroot={sdk_dir}/sdk-{platform.system()}/share/wasi-sysroot",
+        "--target=wasm32-wasi-threads",
+        "-pthread",
+        "-nostartfiles",
+        f"-I{include_dir}",
+        "-Wl,--no-entry,-export-dynamic,--allow-undefined",
+    ] + command
+
+    print(" ".join(args))
+    try:
+        subprocess.call(args)
+
+    except FileNotFoundError:
+        print("wasi-sdk not found")
+        download_sdk(buildcpp)
