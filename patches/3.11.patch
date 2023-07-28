@@ -1,1304 +1,470 @@
 --- abstract.h
 +++ abstract.h
-@@ -3,7 +3,8 @@
- #ifndef Py_ABSTRACTOBJECT_H
- #define Py_ABSTRACTOBJECT_H
- #ifdef __cplusplus
--extern "C" {
-+extern "C"
-+{
- #endif
+@@ -143,7 +143,7 @@
  
- /* === Object Protocol ================================================== */
-@@ -18,7 +19,6 @@
- 
-    (What should be said about Py_Print_RAW?). */
- 
--
- /* Implemented elsewhere:
- 
-    int PyObject_HasAttrString(PyObject *o, const char *attr_name);
-@@ -29,7 +29,6 @@
- 
-    This function always succeeds. */
- 
--
- /* Implemented elsewhere:
- 
-    PyObject* PyObject_GetAttrString(PyObject *o, const char *attr_name);
-@@ -39,7 +38,6 @@
- 
-    This is the equivalent of the Python expression: o.attr_name. */
- 
--
- /* Implemented elsewhere:
- 
-    int PyObject_HasAttr(PyObject *o, PyObject *attr_name);
-@@ -59,7 +57,6 @@
- 
-    This is the equivalent of the Python expression: o.attr_name. */
- 
--
- /* Implemented elsewhere:
- 
-    int PyObject_SetAttrString(PyObject *o, const char *attr_name, PyObject *v);
-@@ -70,7 +67,6 @@
- 
-    This is the equivalent of the Python statement o.attr_name=v. */
- 
--
- /* Implemented elsewhere:
- 
-    int PyObject_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v);
-@@ -88,8 +84,7 @@
-    -1 on failure.
- 
-    This is the equivalent of the Python statement: del o.attr_name. */
--#define PyObject_DelAttrString(O,A) PyObject_SetAttrString((O),(A), NULL)
--
-+#define PyObject_DelAttrString(O, A) PyObject_SetAttrString((O), (A), NULL)
- 
- /* Implemented as a macro:
- 
-@@ -98,702 +93,677 @@
-    Delete attribute named attr_name, for object o. Returns -1
-    on failure.  This is the equivalent of the Python
-    statement: del o.attr_name. */
--#define  PyObject_DelAttr(O,A) PyObject_SetAttr((O),(A), NULL)
--
-+#define PyObject_DelAttr(O, A) PyObject_SetAttr((O), (A), NULL)
- 
--/* Implemented elsewhere:
--
--   PyObject *PyObject_Repr(PyObject *o);
-+   /* Implemented elsewhere:
- 
--   Compute the string representation of object 'o'.  Returns the
--   string representation on success, NULL on failure.
-+      PyObject *PyObject_Repr(PyObject *o);
- 
--   This is the equivalent of the Python expression: repr(o).
-+      Compute the string representation of object 'o'.  Returns the
-+      string representation on success, NULL on failure.
- 
--   Called by the repr() built-in function. */
-+      This is the equivalent of the Python expression: repr(o).
- 
-+      Called by the repr() built-in function. */
- 
--/* Implemented elsewhere:
-+   /* Implemented elsewhere:
- 
--   PyObject *PyObject_Str(PyObject *o);
-+      PyObject *PyObject_Str(PyObject *o);
- 
--   Compute the string representation of object, o.  Returns the
--   string representation on success, NULL on failure.
-+      Compute the string representation of object, o.  Returns the
-+      string representation on success, NULL on failure.
- 
--   This is the equivalent of the Python expression: str(o).
-+      This is the equivalent of the Python expression: str(o).
- 
--   Called by the str() and print() built-in functions. */
-+      Called by the str() and print() built-in functions. */
- 
-+   /* Declared elsewhere
- 
--/* Declared elsewhere
-+      PyAPI_FUNC(int) PyCallable_Check(PyObject *o);
- 
--   PyAPI_FUNC(int) PyCallable_Check(PyObject *o);
--
--   Determine if the object, o, is callable.  Return 1 if the object is callable
--   and 0 otherwise.
--
--   This function always succeeds. */
-+      Determine if the object, o, is callable.  Return 1 if the object is callable
-+      and 0 otherwise.
- 
-+      This function always succeeds. */
- 
- #ifdef PY_SSIZE_T_CLEAN
--#  define PyObject_CallFunction _PyObject_CallFunction_SizeT
--#  define PyObject_CallMethod _PyObject_CallMethod_SizeT
-+#define PyObject_CallFunction _PyObject_CallFunction_SizeT
-+#define PyObject_CallMethod _PyObject_CallMethod_SizeT
- #endif
- 
--
--#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03090000
--/* Call a callable Python object without any arguments */
+ #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03090000
+ /* Call a callable Python object without any arguments */
 -PyAPI_FUNC(PyObject *) PyObject_CallNoArgs(PyObject *func);
-+#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03090000
-+   /* Call a callable Python object without any arguments */
-+   PyAPI_FUNC(uint64_t) PyObject_CallNoArgs(PyObject *func);
++PyAPI_FUNC(uint64_t) PyObject_CallNoArgs(PyObject *func);
  #endif
  
-+   /* Call a callable Python object 'callable' with arguments given by the
-+      tuple 'args' and keywords arguments given by the dictionary 'kwargs'.
  
--/* Call a callable Python object 'callable' with arguments given by the
--   tuple 'args' and keywords arguments given by the dictionary 'kwargs'.
-+      'args' must not be NULL, use an empty tuple if no arguments are
-+      needed. If no named arguments are needed, 'kwargs' can be NULL.
+@@ -155,7 +155,7 @@
  
--   'args' must not be NULL, use an empty tuple if no arguments are
--   needed. If no named arguments are needed, 'kwargs' can be NULL.
-+      This is the equivalent of the Python expression:
-+      callable(*args, **kwargs). */
-+   PyAPI_FUNC(uint64_t) PyObject_Call(PyObject *callable,
-+                                      PyObject *args, PyObject *kwargs);
- 
--   This is the equivalent of the Python expression:
--   callable(*args, **kwargs). */
+    This is the equivalent of the Python expression:
+    callable(*args, **kwargs). */
 -PyAPI_FUNC(PyObject *) PyObject_Call(PyObject *callable,
--                                     PyObject *args, PyObject *kwargs);
-+   /* Call a callable Python object 'callable', with arguments given by the
-+      tuple 'args'.  If no arguments are needed, then 'args' can be NULL.
++PyAPI_FUNC(uint64_t) PyObject_Call(PyObject *callable,
+                                      PyObject *args, PyObject *kwargs);
  
-+      Returns the result of the call on success, or NULL on failure.
  
--/* Call a callable Python object 'callable', with arguments given by the
--   tuple 'args'.  If no arguments are needed, then 'args' can be NULL.
-+      This is the equivalent of the Python expression:
-+      callable(*args). */
-+   PyAPI_FUNC(uint64_t) PyObject_CallObject(PyObject *callable,
-+                                            PyObject *args);
+@@ -166,7 +166,7 @@
  
--   Returns the result of the call on success, or NULL on failure.
-+   /* Call a callable Python object, callable, with a variable number of C
-+      arguments. The C arguments are described using a mkvalue-style format
-+      string.
- 
--   This is the equivalent of the Python expression:
--   callable(*args). */
+    This is the equivalent of the Python expression:
+    callable(*args). */
 -PyAPI_FUNC(PyObject *) PyObject_CallObject(PyObject *callable,
--                                           PyObject *args);
-+      The format may be NULL, indicating that no arguments are provided.
++PyAPI_FUNC(uint64_t) PyObject_CallObject(PyObject *callable,
+                                            PyObject *args);
  
--/* Call a callable Python object, callable, with a variable number of C
--   arguments. The C arguments are described using a mkvalue-style format
--   string.
-+      Returns the result of the call on success, or NULL on failure.
+ /* Call a callable Python object, callable, with a variable number of C
+@@ -179,7 +179,7 @@
  
--   The format may be NULL, indicating that no arguments are provided.
-+      This is the equivalent of the Python expression:
-+      callable(arg1, arg2, ...). */
-+   PyAPI_FUNC(uint64_t) PyObject_CallFunction(PyObject *callable,
-+                                              const char *format, ...);
- 
--   Returns the result of the call on success, or NULL on failure.
-+   /* Call the method named 'name' of object 'obj' with a variable number of
-+      C arguments.  The C arguments are described by a mkvalue format string.
- 
--   This is the equivalent of the Python expression:
--   callable(arg1, arg2, ...). */
+    This is the equivalent of the Python expression:
+    callable(arg1, arg2, ...). */
 -PyAPI_FUNC(PyObject *) PyObject_CallFunction(PyObject *callable,
--                                             const char *format, ...);
-+      The format can be NULL, indicating that no arguments are provided.
++PyAPI_FUNC(uint64_t) PyObject_CallFunction(PyObject *callable,
+                                              const char *format, ...);
  
--/* Call the method named 'name' of object 'obj' with a variable number of
--   C arguments.  The C arguments are described by a mkvalue format string.
-+      Returns the result of the call on success, or NULL on failure.
+ /* Call the method named 'name' of object 'obj' with a variable number of
+@@ -191,15 +191,15 @@
  
--   The format can be NULL, indicating that no arguments are provided.
-+      This is the equivalent of the Python expression:
-+      obj.name(arg1, arg2, ...). */
-+   PyAPI_FUNC(uint64_t) PyObject_CallMethod(PyObject *obj,
-+                                            const char *name,
-+                                            const char *format, ...);
- 
--   Returns the result of the call on success, or NULL on failure.
-+   PyAPI_FUNC(uint64_t) _PyObject_CallFunction_SizeT(PyObject *callable,
-+                                                     const char *format,
-+                                                     ...);
- 
--   This is the equivalent of the Python expression:
--   obj.name(arg1, arg2, ...). */
+    This is the equivalent of the Python expression:
+    obj.name(arg1, arg2, ...). */
 -PyAPI_FUNC(PyObject *) PyObject_CallMethod(PyObject *obj,
--                                           const char *name,
--                                           const char *format, ...);
-+   PyAPI_FUNC(uint64_t) _PyObject_CallMethod_SizeT(PyObject *obj,
-+                                                   const char *name,
-+                                                   const char *format,
-+                                                   ...);
++PyAPI_FUNC(uint64_t) PyObject_CallMethod(PyObject *obj,
+                                            const char *name,
+                                            const char *format, ...);
  
 -PyAPI_FUNC(PyObject *) _PyObject_CallFunction_SizeT(PyObject *callable,
--                                                    const char *format,
--                                                    ...);
-+   /* Call a callable Python object 'callable' with a variable number of C
-+      arguments. The C arguments are provided as PyObject* values, terminated
-+      by a NULL.
++PyAPI_FUNC(uint64_t) _PyObject_CallFunction_SizeT(PyObject *callable,
+                                                     const char *format,
+                                                     ...);
  
 -PyAPI_FUNC(PyObject *) _PyObject_CallMethod_SizeT(PyObject *obj,
--                                                  const char *name,
--                                                  const char *format,
--                                                  ...);
-+      Returns the result of the call on success, or NULL on failure.
++PyAPI_FUNC(uint64_t) _PyObject_CallMethod_SizeT(PyObject *obj,
+                                                   const char *name,
+                                                   const char *format,
+                                                   ...);
+@@ -212,7 +212,7 @@
  
--/* Call a callable Python object 'callable' with a variable number of C
--   arguments. The C arguments are provided as PyObject* values, terminated
--   by a NULL.
-+      This is the equivalent of the Python expression:
-+      callable(arg1, arg2, ...). */
-+   PyAPI_FUNC(uint64_t) PyObject_CallFunctionObjArgs(PyObject *callable,
-+                                                     ...);
- 
--   Returns the result of the call on success, or NULL on failure.
-+   /* Call the method named 'name' of object 'obj' with a variable number of
-+      C arguments.  The C arguments are provided as PyObject* values, terminated
-+      by NULL.
- 
--   This is the equivalent of the Python expression:
--   callable(arg1, arg2, ...). */
+    This is the equivalent of the Python expression:
+    callable(arg1, arg2, ...). */
 -PyAPI_FUNC(PyObject *) PyObject_CallFunctionObjArgs(PyObject *callable,
--                                                    ...);
-+      Returns the result of the call on success, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyObject_CallFunctionObjArgs(PyObject *callable,
+                                                     ...);
  
--/* Call the method named 'name' of object 'obj' with a variable number of
--   C arguments.  The C arguments are provided as PyObject* values, terminated
--   by NULL.
-+      This is the equivalent of the Python expression: obj.name(*args). */
+ /* Call the method named 'name' of object 'obj' with a variable number of
+@@ -223,7 +223,7 @@
  
--   Returns the result of the call on success, or NULL on failure.
-+   PyAPI_FUNC(uint64_t) PyObject_CallMethodObjArgs(
-+       PyObject *obj,
-+       PyObject *name,
-+       ...);
- 
--   This is the equivalent of the Python expression: obj.name(*args). */
-+   /* Implemented elsewhere:
+    This is the equivalent of the Python expression: obj.name(*args). */
  
 -PyAPI_FUNC(PyObject *) PyObject_CallMethodObjArgs(
--    PyObject *obj,
--    PyObject *name,
--    ...);
-+      Py_hash_t PyObject_Hash(PyObject *o);
++PyAPI_FUNC(uint64_t) PyObject_CallMethodObjArgs(
+     PyObject *obj,
+     PyObject *name,
+     ...);
+@@ -265,7 +265,7 @@
+    'o'. On failure, returns NULL.
  
-+      Compute and return the hash, hash_value, of an object, o.  On
-+      failure, return -1.
- 
--/* Implemented elsewhere:
--
--   Py_hash_t PyObject_Hash(PyObject *o);
--
--   Compute and return the hash, hash_value, of an object, o.  On
--   failure, return -1.
--
--   This is the equivalent of the Python expression: hash(o). */
--
--
--/* Implemented elsewhere:
-+      This is the equivalent of the Python expression: hash(o). */
- 
--   int PyObject_IsTrue(PyObject *o);
-+   /* Implemented elsewhere:
- 
--   Returns 1 if the object, o, is considered to be true, 0 if o is
--   considered to be false and -1 on failure.
-+      int PyObject_IsTrue(PyObject *o);
- 
--   This is equivalent to the Python expression: not not o. */
-+      Returns 1 if the object, o, is considered to be true, 0 if o is
-+      considered to be false and -1 on failure.
- 
-+      This is equivalent to the Python expression: not not o. */
- 
--/* Implemented elsewhere:
--
--   int PyObject_Not(PyObject *o);
--
--   Returns 0 if the object, o, is considered to be true, 1 if o is
--   considered to be false and -1 on failure.
--
--   This is equivalent to the Python expression: not o. */
-+   /* Implemented elsewhere:
- 
-+      int PyObject_Not(PyObject *o);
- 
--/* Get the type of an object.
-+      Returns 0 if the object, o, is considered to be true, 1 if o is
-+      considered to be false and -1 on failure.
- 
--   On success, returns a type object corresponding to the object type of object
--   'o'. On failure, returns NULL.
-+      This is equivalent to the Python expression: not o. */
- 
--   This is equivalent to the Python expression: type(o) */
+    This is equivalent to the Python expression: type(o) */
 -PyAPI_FUNC(PyObject *) PyObject_Type(PyObject *o);
-+   /* Get the type of an object.
++PyAPI_FUNC(uint64_t) PyObject_Type(PyObject *o);
  
-+      On success, returns a type object corresponding to the object type of object
-+      'o'. On failure, returns NULL.
  
--/* Return the size of object 'o'.  If the object 'o' provides both sequence and
--   mapping protocols, the sequence size is returned.
-+      This is equivalent to the Python expression: type(o) */
-+   PyAPI_FUNC(uint64_t) PyObject_Type(PyObject *o);
+ /* Return the size of object 'o'.  If the object 'o' provides both sequence and
+@@ -286,7 +286,7 @@
+   on failure.
  
--   On error, -1 is returned.
-+   /* Return the size of object 'o'.  If the object 'o' provides both sequence and
-+      mapping protocols, the sequence size is returned.
- 
--   This is the equivalent to the Python expression: len(o) */
--PyAPI_FUNC(Py_ssize_t) PyObject_Size(PyObject *o);
-+      On error, -1 is returned.
- 
-+      This is the equivalent to the Python expression: len(o) */
-+   PyAPI_FUNC(Py_ssize_t) PyObject_Size(PyObject *o);
- 
- /* For DLL compatibility */
- #undef PyObject_Length
--PyAPI_FUNC(Py_ssize_t) PyObject_Length(PyObject *o);
-+   PyAPI_FUNC(Py_ssize_t) PyObject_Length(PyObject *o);
- #define PyObject_Length PyObject_Size
- 
--/* Return element of 'o' corresponding to the object 'key'. Return NULL
--  on failure.
-+   /* Return element of 'o' corresponding to the object 'key'. Return NULL
-+     on failure.
- 
--  This is the equivalent of the Python expression: o[key] */
+   This is the equivalent of the Python expression: o[key] */
 -PyAPI_FUNC(PyObject *) PyObject_GetItem(PyObject *o, PyObject *key);
-+     This is the equivalent of the Python expression: o[key] */
-+   PyAPI_FUNC(uint64_t) PyObject_GetItem(PyObject *o, PyObject *key);
++PyAPI_FUNC(uint64_t) PyObject_GetItem(PyObject *o, PyObject *key);
  
-+   /* Map the object 'key' to the value 'v' into 'o'.
  
--/* Map the object 'key' to the value 'v' into 'o'.
-+      Raise an exception and return -1 on failure; return 0 on success.
+ /* Map the object 'key' to the value 'v' into 'o'.
+@@ -360,7 +360,7 @@
  
--   Raise an exception and return -1 on failure; return 0 on success.
-+      This is the equivalent of the Python statement: o[key]=v. */
-+   PyAPI_FUNC(int) PyObject_SetItem(PyObject *o, PyObject *key, PyObject *v);
- 
--   This is the equivalent of the Python statement: o[key]=v. */
--PyAPI_FUNC(int) PyObject_SetItem(PyObject *o, PyObject *key, PyObject *v);
-+   /* Remove the mapping for the string 'key' from the object 'o'.
-+      Returns -1 on failure.
- 
--/* Remove the mapping for the string 'key' from the object 'o'.
--   Returns -1 on failure.
-+      This is equivalent to the Python statement: del o[key]. */
-+   PyAPI_FUNC(int) PyObject_DelItemString(PyObject *o, const char *key);
- 
--   This is equivalent to the Python statement: del o[key]. */
--PyAPI_FUNC(int) PyObject_DelItemString(PyObject *o, const char *key);
-+   /* Delete the mapping for the object 'key' from the object 'o'.
-+      Returns -1 on failure.
- 
--/* Delete the mapping for the object 'key' from the object 'o'.
--   Returns -1 on failure.
-+      This is the equivalent of the Python statement: del o[key]. */
-+   PyAPI_FUNC(int) PyObject_DelItem(PyObject *o, PyObject *key);
- 
--   This is the equivalent of the Python statement: del o[key]. */
--PyAPI_FUNC(int) PyObject_DelItem(PyObject *o, PyObject *key);
-+   /* === Old Buffer API ============================================ */
- 
-+   /* FIXME:  usage of these should all be replaced in Python itself
-+      but for backwards compatibility we will implement them.
-+      Their usage without a corresponding "unlock" mechanism
-+      may create issues (but they would already be there). */
- 
--/* === Old Buffer API ============================================ */
-+   /* Takes an arbitrary object which must support the (character, single segment)
-+      buffer interface and returns a pointer to a read-only memory location
-+      usable as character based input for subsequent processing.
- 
--/* FIXME:  usage of these should all be replaced in Python itself
--   but for backwards compatibility we will implement them.
--   Their usage without a corresponding "unlock" mechanism
--   may create issues (but they would already be there). */
-+      Return 0 on success.  buffer and buffer_len are only set in case no error
-+      occurs. Otherwise, -1 is returned and an exception set. */
-+   Py_DEPRECATED(3.0)
-+       PyAPI_FUNC(int) PyObject_AsCharBuffer(PyObject *obj,
-+                                             const char **buffer,
-+                                             Py_ssize_t *buffer_len);
- 
--/* Takes an arbitrary object which must support the (character, single segment)
--   buffer interface and returns a pointer to a read-only memory location
--   usable as character based input for subsequent processing.
-+   /* Checks whether an arbitrary object supports the (character, single segment)
-+      buffer interface.
- 
--   Return 0 on success.  buffer and buffer_len are only set in case no error
--   occurs. Otherwise, -1 is returned and an exception set. */
--Py_DEPRECATED(3.0)
--PyAPI_FUNC(int) PyObject_AsCharBuffer(PyObject *obj,
--                                      const char **buffer,
--                                      Py_ssize_t *buffer_len);
-+      Returns 1 on success, 0 on failure. */
-+   Py_DEPRECATED(3.0) PyAPI_FUNC(int) PyObject_CheckReadBuffer(PyObject *obj);
- 
--/* Checks whether an arbitrary object supports the (character, single segment)
--   buffer interface.
-+   /* Same as PyObject_AsCharBuffer() except that this API expects (readable,
-+      single segment) buffer interface and returns a pointer to a read-only memory
-+      location which can contain arbitrary data.
- 
--   Returns 1 on success, 0 on failure. */
--Py_DEPRECATED(3.0) PyAPI_FUNC(int) PyObject_CheckReadBuffer(PyObject *obj);
-+      0 is returned on success.  buffer and buffer_len are only set in case no
-+      error occurs.  Otherwise, -1 is returned and an exception set. */
-+   Py_DEPRECATED(3.0)
-+       PyAPI_FUNC(int) PyObject_AsReadBuffer(PyObject *obj,
-+                                             const void **buffer,
-+                                             Py_ssize_t *buffer_len);
- 
--/* Same as PyObject_AsCharBuffer() except that this API expects (readable,
--   single segment) buffer interface and returns a pointer to a read-only memory
--   location which can contain arbitrary data.
-+   /* Takes an arbitrary object which must support the (writable, single segment)
-+      buffer interface and returns a pointer to a writable memory location in
-+      buffer of size 'buffer_len'.
- 
--   0 is returned on success.  buffer and buffer_len are only set in case no
--   error occurs.  Otherwise, -1 is returned and an exception set. */
--Py_DEPRECATED(3.0)
--PyAPI_FUNC(int) PyObject_AsReadBuffer(PyObject *obj,
--                                      const void **buffer,
--                                      Py_ssize_t *buffer_len);
-+      Return 0 on success.  buffer and buffer_len are only set in case no error
-+      occurs. Otherwise, -1 is returned and an exception set. */
-+   Py_DEPRECATED(3.0)
-+       PyAPI_FUNC(int) PyObject_AsWriteBuffer(PyObject *obj,
-+                                              void **buffer,
-+                                              Py_ssize_t *buffer_len);
- 
--/* Takes an arbitrary object which must support the (writable, single segment)
--   buffer interface and returns a pointer to a writable memory location in
--   buffer of size 'buffer_len'.
-+   /* === New Buffer API ============================================ */
- 
--   Return 0 on success.  buffer and buffer_len are only set in case no error
--   occurs. Otherwise, -1 is returned and an exception set. */
--Py_DEPRECATED(3.0)
--PyAPI_FUNC(int) PyObject_AsWriteBuffer(PyObject *obj,
--                                       void **buffer,
--                                       Py_ssize_t *buffer_len);
-+   /* Takes an arbitrary object and returns the result of calling
-+      obj.__format__(format_spec). */
-+   PyAPI_FUNC(uint64_t) PyObject_Format(PyObject *obj,
-+                                        PyObject *format_spec);
- 
-+   /* ==== Iterators ================================================ */
- 
--/* === New Buffer API ============================================ */
-+   /* Takes an object and returns an iterator for it.
-+      This is typically a new iterator but if the argument is an iterator, this
-+      returns itself. */
-+   PyAPI_FUNC(uint64_t) PyObject_GetIter(PyObject *);
- 
--/* Takes an arbitrary object and returns the result of calling
--   obj.__format__(format_spec). */
+ /* Takes an arbitrary object and returns the result of calling
+    obj.__format__(format_spec). */
 -PyAPI_FUNC(PyObject *) PyObject_Format(PyObject *obj,
--                                       PyObject *format_spec);
-+   /* Takes an AsyncIterable object and returns an AsyncIterator for it.
-+      This is typically a new iterator but if the argument is an AsyncIterator,
-+      this returns itself. */
-+   PyAPI_FUNC(uint64_t) PyObject_GetAIter(PyObject *);
++PyAPI_FUNC(uint64_t) PyObject_Format(PyObject *obj,
+                                        PyObject *format_spec);
  
-+   /* Returns non-zero if the object 'obj' provides iterator protocols, and 0 otherwise.
  
--/* ==== Iterators ================================================ */
-+      This function always succeeds. */
-+   PyAPI_FUNC(int) PyIter_Check(PyObject *);
- 
--/* Takes an object and returns an iterator for it.
--   This is typically a new iterator but if the argument is an iterator, this
--   returns itself. */
+@@ -369,12 +369,12 @@
+ /* Takes an object and returns an iterator for it.
+    This is typically a new iterator but if the argument is an iterator, this
+    returns itself. */
 -PyAPI_FUNC(PyObject *) PyObject_GetIter(PyObject *);
-+   /* Returns non-zero if the object 'obj' provides AsyncIterator protocols, and 0 otherwise.
++PyAPI_FUNC(uint64_t) PyObject_GetIter(PyObject *);
  
--/* Takes an AsyncIterable object and returns an AsyncIterator for it.
--   This is typically a new iterator but if the argument is an AsyncIterator,
--   this returns itself. */
+ /* Takes an AsyncIterable object and returns an AsyncIterator for it.
+    This is typically a new iterator but if the argument is an AsyncIterator,
+    this returns itself. */
 -PyAPI_FUNC(PyObject *) PyObject_GetAIter(PyObject *);
-+      This function always succeeds. */
-+   PyAPI_FUNC(int) PyAIter_Check(PyObject *);
++PyAPI_FUNC(uint64_t) PyObject_GetAIter(PyObject *);
  
--/* Returns non-zero if the object 'obj' provides iterator protocols, and 0 otherwise.
-+   /* Takes an iterator object and calls its tp_iternext slot,
-+      returning the next value.
+ /* Returns non-zero if the object 'obj' provides iterator protocols, and 0 otherwise.
  
--   This function always succeeds. */
--PyAPI_FUNC(int) PyIter_Check(PyObject *);
--
--/* Returns non-zero if the object 'obj' provides AsyncIterator protocols, and 0 otherwise.
--
--   This function always succeeds. */
--PyAPI_FUNC(int) PyAIter_Check(PyObject *);
-+      If the iterator is exhausted, this returns NULL without setting an
-+      exception.
+@@ -393,7 +393,7 @@
+    exception.
  
--/* Takes an iterator object and calls its tp_iternext slot,
--   returning the next value.
-+      NULL with an exception means an error occurred. */
-+   PyAPI_FUNC(uint64_t) PyIter_Next(PyObject *);
- 
--   If the iterator is exhausted, this returns NULL without setting an
--   exception.
-+#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x030A0000
- 
--   NULL with an exception means an error occurred. */
+    NULL with an exception means an error occurred. */
 -PyAPI_FUNC(PyObject *) PyIter_Next(PyObject *);
--
--#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x030A0000
--
--/* Takes generator, coroutine or iterator object and sends the value into it.
--   Returns:
--   - PYGEN_RETURN (0) if generator has returned.
--     'result' parameter is filled with return value
--   - PYGEN_ERROR (-1) if exception was raised.
--     'result' parameter is NULL
--   - PYGEN_NEXT (1) if generator has yielded.
--     'result' parameter is filled with yielded value. */
--PyAPI_FUNC(PySendResult) PyIter_Send(PyObject *, PyObject *, PyObject **);
-+   /* Takes generator, coroutine or iterator object and sends the value into it.
-+      Returns:
-+      - PYGEN_RETURN (0) if generator has returned.
-+        'result' parameter is filled with return value
-+      - PYGEN_ERROR (-1) if exception was raised.
-+        'result' parameter is NULL
-+      - PYGEN_NEXT (1) if generator has yielded.
-+        'result' parameter is filled with yielded value. */
-+   PyAPI_FUNC(PySendResult) PyIter_Send(PyObject *, PyObject *, PyObject **);
- #endif
++PyAPI_FUNC(uint64_t) PyIter_Next(PyObject *);
  
-+   /* === Number Protocol ================================================== */
+ #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x030A0000
  
--/* === Number Protocol ================================================== */
-+   /* Returns 1 if the object 'o' provides numeric protocols, and 0 otherwise.
+@@ -419,101 +419,101 @@
+ /* Returns the result of adding o1 and o2, or NULL on failure.
  
--/* Returns 1 if the object 'o' provides numeric protocols, and 0 otherwise.
-+      This function always succeeds. */
-+   PyAPI_FUNC(int) PyNumber_Check(PyObject *o);
- 
--   This function always succeeds. */
--PyAPI_FUNC(int) PyNumber_Check(PyObject *o);
--
--/* Returns the result of adding o1 and o2, or NULL on failure.
-+   /* Returns the result of adding o1 and o2, or NULL on failure.
- 
--   This is the equivalent of the Python expression: o1 + o2. */
+    This is the equivalent of the Python expression: o1 + o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Add(PyObject *o1, PyObject *o2);
-+      This is the equivalent of the Python expression: o1 + o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Add(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_Add(PyObject *o1, PyObject *o2);
  
--/* Returns the result of subtracting o2 from o1, or NULL on failure.
-+   /* Returns the result of subtracting o2 from o1, or NULL on failure.
+ /* Returns the result of subtracting o2 from o1, or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 - o2. */
+    This is the equivalent of the Python expression: o1 - o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Subtract(PyObject *o1, PyObject *o2);
-+      This is the equivalent of the Python expression: o1 - o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Subtract(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_Subtract(PyObject *o1, PyObject *o2);
  
--/* Returns the result of multiplying o1 and o2, or NULL on failure.
-+   /* Returns the result of multiplying o1 and o2, or NULL on failure.
+ /* Returns the result of multiplying o1 and o2, or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 * o2. */
+    This is the equivalent of the Python expression: o1 * o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Multiply(PyObject *o1, PyObject *o2);
-+      This is the equivalent of the Python expression: o1 * o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Multiply(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_Multiply(PyObject *o1, PyObject *o2);
  
--#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03050000
--/* This is the equivalent of the Python expression: o1 @ o2. */
+ #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03050000
+ /* This is the equivalent of the Python expression: o1 @ o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_MatrixMultiply(PyObject *o1, PyObject *o2);
-+#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03050000
-+   /* This is the equivalent of the Python expression: o1 @ o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_MatrixMultiply(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_MatrixMultiply(PyObject *o1, PyObject *o2);
  #endif
  
--/* Returns the result of dividing o1 by o2 giving an integral result,
--   or NULL on failure.
--
--   This is the equivalent of the Python expression: o1 // o2. */
+ /* Returns the result of dividing o1 by o2 giving an integral result,
+    or NULL on failure.
+ 
+    This is the equivalent of the Python expression: o1 // o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_FloorDivide(PyObject *o1, PyObject *o2);
-+   /* Returns the result of dividing o1 by o2 giving an integral result,
-+      or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_FloorDivide(PyObject *o1, PyObject *o2);
  
--/* Returns the result of dividing o1 by o2 giving a float result, or NULL on
--   failure.
-+      This is the equivalent of the Python expression: o1 // o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_FloorDivide(PyObject *o1, PyObject *o2);
+ /* Returns the result of dividing o1 by o2 giving a float result, or NULL on
+    failure.
  
--   This is the equivalent of the Python expression: o1 / o2. */
+    This is the equivalent of the Python expression: o1 / o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_TrueDivide(PyObject *o1, PyObject *o2);
-+   /* Returns the result of dividing o1 by o2 giving a float result, or NULL on
-+      failure.
++PyAPI_FUNC(uint64_t) PyNumber_TrueDivide(PyObject *o1, PyObject *o2);
  
--/* Returns the remainder of dividing o1 by o2, or NULL on failure.
-+      This is the equivalent of the Python expression: o1 / o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_TrueDivide(PyObject *o1, PyObject *o2);
+ /* Returns the remainder of dividing o1 by o2, or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 % o2. */
+    This is the equivalent of the Python expression: o1 % o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Remainder(PyObject *o1, PyObject *o2);
-+   /* Returns the remainder of dividing o1 by o2, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Remainder(PyObject *o1, PyObject *o2);
  
--/* See the built-in function divmod.
-+      This is the equivalent of the Python expression: o1 % o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Remainder(PyObject *o1, PyObject *o2);
+ /* See the built-in function divmod.
  
--   Returns NULL on failure.
-+   /* See the built-in function divmod.
+    Returns NULL on failure.
  
--   This is the equivalent of the Python expression: divmod(o1, o2). */
+    This is the equivalent of the Python expression: divmod(o1, o2). */
 -PyAPI_FUNC(PyObject *) PyNumber_Divmod(PyObject *o1, PyObject *o2);
-+      Returns NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Divmod(PyObject *o1, PyObject *o2);
  
--/* See the built-in function pow. Returns NULL on failure.
-+      This is the equivalent of the Python expression: divmod(o1, o2). */
-+   PyAPI_FUNC(uint64_t) PyNumber_Divmod(PyObject *o1, PyObject *o2);
+ /* See the built-in function pow. Returns NULL on failure.
  
--   This is the equivalent of the Python expression: pow(o1, o2, o3),
--   where o3 is optional. */
+    This is the equivalent of the Python expression: pow(o1, o2, o3),
+    where o3 is optional. */
 -PyAPI_FUNC(PyObject *) PyNumber_Power(PyObject *o1, PyObject *o2,
--                                      PyObject *o3);
-+   /* See the built-in function pow. Returns NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Power(PyObject *o1, PyObject *o2,
+                                       PyObject *o3);
  
--/* Returns the negation of o on success, or NULL on failure.
-+      This is the equivalent of the Python expression: pow(o1, o2, o3),
-+      where o3 is optional. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Power(PyObject *o1, PyObject *o2,
-+                                       PyObject *o3);
+ /* Returns the negation of o on success, or NULL on failure.
  
-- This is the equivalent of the Python expression: -o. */
+  This is the equivalent of the Python expression: -o. */
 -PyAPI_FUNC(PyObject *) PyNumber_Negative(PyObject *o);
-+   /* Returns the negation of o on success, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Negative(PyObject *o);
  
--/* Returns the positive of o on success, or NULL on failure.
-+    This is the equivalent of the Python expression: -o. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Negative(PyObject *o);
+ /* Returns the positive of o on success, or NULL on failure.
  
--   This is the equivalent of the Python expression: +o. */
+    This is the equivalent of the Python expression: +o. */
 -PyAPI_FUNC(PyObject *) PyNumber_Positive(PyObject *o);
-+   /* Returns the positive of o on success, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Positive(PyObject *o);
  
--/* Returns the absolute value of 'o', or NULL on failure.
-+      This is the equivalent of the Python expression: +o. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Positive(PyObject *o);
+ /* Returns the absolute value of 'o', or NULL on failure.
  
--   This is the equivalent of the Python expression: abs(o). */
+    This is the equivalent of the Python expression: abs(o). */
 -PyAPI_FUNC(PyObject *) PyNumber_Absolute(PyObject *o);
-+   /* Returns the absolute value of 'o', or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Absolute(PyObject *o);
  
--/* Returns the bitwise negation of 'o' on success, or NULL on failure.
-+      This is the equivalent of the Python expression: abs(o). */
-+   PyAPI_FUNC(uint64_t) PyNumber_Absolute(PyObject *o);
+ /* Returns the bitwise negation of 'o' on success, or NULL on failure.
  
--   This is the equivalent of the Python expression: ~o. */
+    This is the equivalent of the Python expression: ~o. */
 -PyAPI_FUNC(PyObject *) PyNumber_Invert(PyObject *o);
-+   /* Returns the bitwise negation of 'o' on success, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Invert(PyObject *o);
  
--/* Returns the result of left shifting o1 by o2 on success, or NULL on failure.
-+      This is the equivalent of the Python expression: ~o. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Invert(PyObject *o);
+ /* Returns the result of left shifting o1 by o2 on success, or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 << o2. */
+    This is the equivalent of the Python expression: o1 << o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Lshift(PyObject *o1, PyObject *o2);
-+   /* Returns the result of left shifting o1 by o2 on success, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Lshift(PyObject *o1, PyObject *o2);
  
--/* Returns the result of right shifting o1 by o2 on success, or NULL on
--   failure.
-+      This is the equivalent of the Python expression: o1 << o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Lshift(PyObject *o1, PyObject *o2);
+ /* Returns the result of right shifting o1 by o2 on success, or NULL on
+    failure.
  
--   This is the equivalent of the Python expression: o1 >> o2. */
+    This is the equivalent of the Python expression: o1 >> o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Rshift(PyObject *o1, PyObject *o2);
-+   /* Returns the result of right shifting o1 by o2 on success, or NULL on
-+      failure.
++PyAPI_FUNC(uint64_t) PyNumber_Rshift(PyObject *o1, PyObject *o2);
  
--/* Returns the result of bitwise and of o1 and o2 on success, or NULL on
--   failure.
-+      This is the equivalent of the Python expression: o1 >> o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Rshift(PyObject *o1, PyObject *o2);
+ /* Returns the result of bitwise and of o1 and o2 on success, or NULL on
+    failure.
  
--   This is the equivalent of the Python expression: o1 & o2. */
+    This is the equivalent of the Python expression: o1 & o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_And(PyObject *o1, PyObject *o2);
-+   /* Returns the result of bitwise and of o1 and o2 on success, or NULL on
-+      failure.
++PyAPI_FUNC(uint64_t) PyNumber_And(PyObject *o1, PyObject *o2);
  
--/* Returns the bitwise exclusive or of o1 by o2 on success, or NULL on failure.
-+      This is the equivalent of the Python expression: o1 & o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_And(PyObject *o1, PyObject *o2);
+ /* Returns the bitwise exclusive or of o1 by o2 on success, or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 ^ o2. */
+    This is the equivalent of the Python expression: o1 ^ o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Xor(PyObject *o1, PyObject *o2);
-+   /* Returns the bitwise exclusive or of o1 by o2 on success, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Xor(PyObject *o1, PyObject *o2);
  
--/* Returns the result of bitwise or on o1 and o2 on success, or NULL on
--   failure.
-+      This is the equivalent of the Python expression: o1 ^ o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Xor(PyObject *o1, PyObject *o2);
+ /* Returns the result of bitwise or on o1 and o2 on success, or NULL on
+    failure.
  
--   This is the equivalent of the Python expression: o1 | o2. */
+    This is the equivalent of the Python expression: o1 | o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_Or(PyObject *o1, PyObject *o2);
-+   /* Returns the result of bitwise or on o1 and o2 on success, or NULL on
-+      failure.
++PyAPI_FUNC(uint64_t) PyNumber_Or(PyObject *o1, PyObject *o2);
  
--/* Returns 1 if obj is an index integer (has the nb_index slot of the
--   tp_as_number structure filled in), and 0 otherwise. */
--PyAPI_FUNC(int) PyIndex_Check(PyObject *);
-+      This is the equivalent of the Python expression: o1 | o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Or(PyObject *o1, PyObject *o2);
+ /* Returns 1 if obj is an index integer (has the nb_index slot of the
+    tp_as_number structure filled in), and 0 otherwise. */
+@@ -521,7 +521,7 @@
  
--/* Returns the object 'o' converted to a Python int, or NULL with an exception
--   raised on failure. */
+ /* Returns the object 'o' converted to a Python int, or NULL with an exception
+    raised on failure. */
 -PyAPI_FUNC(PyObject *) PyNumber_Index(PyObject *o);
-+   /* Returns 1 if obj is an index integer (has the nb_index slot of the
-+      tp_as_number structure filled in), and 0 otherwise. */
-+   PyAPI_FUNC(int) PyIndex_Check(PyObject *);
++PyAPI_FUNC(uint64_t) PyNumber_Index(PyObject *o);
  
--/* Returns the object 'o' converted to Py_ssize_t by going through
--   PyNumber_Index() first.
-+   /* Returns the object 'o' converted to a Python int, or NULL with an exception
-+      raised on failure. */
-+   PyAPI_FUNC(uint64_t) PyNumber_Index(PyObject *o);
+ /* Returns the object 'o' converted to Py_ssize_t by going through
+    PyNumber_Index() first.
+@@ -535,13 +535,13 @@
+    on failure.
  
--   If an overflow error occurs while converting the int to Py_ssize_t, then the
--   second argument 'exc' is the error-type to return.  If it is NULL, then the
--   overflow error is cleared and the value is clipped. */
--PyAPI_FUNC(Py_ssize_t) PyNumber_AsSsize_t(PyObject *o, PyObject *exc);
-+   /* Returns the object 'o' converted to Py_ssize_t by going through
-+      PyNumber_Index() first.
- 
--/* Returns the object 'o' converted to an integer object on success, or NULL
--   on failure.
-+      If an overflow error occurs while converting the int to Py_ssize_t, then the
-+      second argument 'exc' is the error-type to return.  If it is NULL, then the
-+      overflow error is cleared and the value is clipped. */
-+   PyAPI_FUNC(Py_ssize_t) PyNumber_AsSsize_t(PyObject *o, PyObject *exc);
- 
--   This is the equivalent of the Python expression: int(o). */
+    This is the equivalent of the Python expression: int(o). */
 -PyAPI_FUNC(PyObject *) PyNumber_Long(PyObject *o);
-+   /* Returns the object 'o' converted to an integer object on success, or NULL
-+      on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Long(PyObject *o);
  
--/* Returns the object 'o' converted to a float object on success, or NULL
--  on failure.
-+      This is the equivalent of the Python expression: int(o). */
-+   PyAPI_FUNC(uint64_t) PyNumber_Long(PyObject *o);
+ /* Returns the object 'o' converted to a float object on success, or NULL
+   on failure.
  
--  This is the equivalent of the Python expression: float(o). */
+   This is the equivalent of the Python expression: float(o). */
 -PyAPI_FUNC(PyObject *) PyNumber_Float(PyObject *o);
-+   /* Returns the object 'o' converted to a float object on success, or NULL
-+     on failure.
++PyAPI_FUNC(uint64_t) PyNumber_Float(PyObject *o);
  
-+     This is the equivalent of the Python expression: float(o). */
-+   PyAPI_FUNC(uint64_t) PyNumber_Float(PyObject *o);
  
--/* --- In-place variants of (some of) the above number protocol functions -- */
-+   /* --- In-place variants of (some of) the above number protocol functions -- */
+ /* --- In-place variants of (some of) the above number protocol functions -- */
+@@ -550,88 +550,88 @@
+    on failure.
  
--/* Returns the result of adding o2 to o1, possibly in-place, or NULL
--   on failure.
-+   /* Returns the result of adding o2 to o1, possibly in-place, or NULL
-+      on failure.
- 
--   This is the equivalent of the Python expression: o1 += o2. */
+    This is the equivalent of the Python expression: o1 += o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceAdd(PyObject *o1, PyObject *o2);
-+      This is the equivalent of the Python expression: o1 += o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceAdd(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceAdd(PyObject *o1, PyObject *o2);
  
--/* Returns the result of subtracting o2 from o1, possibly in-place or
--   NULL on failure.
-+   /* Returns the result of subtracting o2 from o1, possibly in-place or
-+      NULL on failure.
+ /* Returns the result of subtracting o2 from o1, possibly in-place or
+    NULL on failure.
  
--   This is the equivalent of the Python expression: o1 -= o2. */
+    This is the equivalent of the Python expression: o1 -= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceSubtract(PyObject *o1, PyObject *o2);
-+      This is the equivalent of the Python expression: o1 -= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceSubtract(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceSubtract(PyObject *o1, PyObject *o2);
  
--/* Returns the result of multiplying o1 by o2, possibly in-place, or NULL on
--   failure.
-+   /* Returns the result of multiplying o1 by o2, possibly in-place, or NULL on
-+      failure.
+ /* Returns the result of multiplying o1 by o2, possibly in-place, or NULL on
+    failure.
  
--   This is the equivalent of the Python expression: o1 *= o2. */
+    This is the equivalent of the Python expression: o1 *= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceMultiply(PyObject *o1, PyObject *o2);
-+      This is the equivalent of the Python expression: o1 *= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceMultiply(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceMultiply(PyObject *o1, PyObject *o2);
  
--#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03050000
--/* This is the equivalent of the Python expression: o1 @= o2. */
+ #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03050000
+ /* This is the equivalent of the Python expression: o1 @= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceMatrixMultiply(PyObject *o1, PyObject *o2);
-+#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03050000
-+   /* This is the equivalent of the Python expression: o1 @= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceMatrixMultiply(PyObject *o1, PyObject *o2);
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceMatrixMultiply(PyObject *o1, PyObject *o2);
  #endif
  
--/* Returns the result of dividing o1 by o2 giving an integral result, possibly
--   in-place, or NULL on failure.
--
--   This is the equivalent of the Python expression: o1 /= o2. */
+ /* Returns the result of dividing o1 by o2 giving an integral result, possibly
+    in-place, or NULL on failure.
+ 
+    This is the equivalent of the Python expression: o1 /= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceFloorDivide(PyObject *o1,
--                                                   PyObject *o2);
-+   /* Returns the result of dividing o1 by o2 giving an integral result, possibly
-+      in-place, or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceFloorDivide(PyObject *o1,
+                                                    PyObject *o2);
  
--/* Returns the result of dividing o1 by o2 giving a float result, possibly
--   in-place, or null on failure.
-+      This is the equivalent of the Python expression: o1 /= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceFloorDivide(PyObject *o1,
-+                                                    PyObject *o2);
+ /* Returns the result of dividing o1 by o2 giving a float result, possibly
+    in-place, or null on failure.
  
--   This is the equivalent of the Python expression: o1 /= o2. */
+    This is the equivalent of the Python expression: o1 /= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceTrueDivide(PyObject *o1,
--                                                  PyObject *o2);
-+   /* Returns the result of dividing o1 by o2 giving a float result, possibly
-+      in-place, or null on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceTrueDivide(PyObject *o1,
+                                                   PyObject *o2);
  
--/* Returns the remainder of dividing o1 by o2, possibly in-place, or NULL on
--   failure.
-+      This is the equivalent of the Python expression: o1 /= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceTrueDivide(PyObject *o1,
-+                                                   PyObject *o2);
+ /* Returns the remainder of dividing o1 by o2, possibly in-place, or NULL on
+    failure.
  
--   This is the equivalent of the Python expression: o1 %= o2. */
+    This is the equivalent of the Python expression: o1 %= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceRemainder(PyObject *o1, PyObject *o2);
-+   /* Returns the remainder of dividing o1 by o2, possibly in-place, or NULL on
-+      failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceRemainder(PyObject *o1, PyObject *o2);
  
--/* Returns the result of raising o1 to the power of o2, possibly in-place,
--   or NULL on failure.
-+      This is the equivalent of the Python expression: o1 %= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceRemainder(PyObject *o1, PyObject *o2);
+ /* Returns the result of raising o1 to the power of o2, possibly in-place,
+    or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 **= o2,
--   or o1 = pow(o1, o2, o3) if o3 is present. */
+    This is the equivalent of the Python expression: o1 **= o2,
+    or o1 = pow(o1, o2, o3) if o3 is present. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlacePower(PyObject *o1, PyObject *o2,
--                                             PyObject *o3);
-+   /* Returns the result of raising o1 to the power of o2, possibly in-place,
-+      or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlacePower(PyObject *o1, PyObject *o2,
+                                              PyObject *o3);
  
--/* Returns the result of left shifting o1 by o2, possibly in-place, or NULL
--   on failure.
-+      This is the equivalent of the Python expression: o1 **= o2,
-+      or o1 = pow(o1, o2, o3) if o3 is present. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlacePower(PyObject *o1, PyObject *o2,
-+                                              PyObject *o3);
+ /* Returns the result of left shifting o1 by o2, possibly in-place, or NULL
+    on failure.
  
--   This is the equivalent of the Python expression: o1 <<= o2. */
+    This is the equivalent of the Python expression: o1 <<= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceLshift(PyObject *o1, PyObject *o2);
-+   /* Returns the result of left shifting o1 by o2, possibly in-place, or NULL
-+      on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceLshift(PyObject *o1, PyObject *o2);
  
--/* Returns the result of right shifting o1 by o2, possibly in-place or NULL
--   on failure.
-+      This is the equivalent of the Python expression: o1 <<= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceLshift(PyObject *o1, PyObject *o2);
+ /* Returns the result of right shifting o1 by o2, possibly in-place or NULL
+    on failure.
  
--   This is the equivalent of the Python expression: o1 >>= o2. */
+    This is the equivalent of the Python expression: o1 >>= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceRshift(PyObject *o1, PyObject *o2);
-+   /* Returns the result of right shifting o1 by o2, possibly in-place or NULL
-+      on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceRshift(PyObject *o1, PyObject *o2);
  
--/* Returns the result of bitwise and of o1 and o2, possibly in-place, or NULL
--   on failure.
-+      This is the equivalent of the Python expression: o1 >>= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceRshift(PyObject *o1, PyObject *o2);
+ /* Returns the result of bitwise and of o1 and o2, possibly in-place, or NULL
+    on failure.
  
--   This is the equivalent of the Python expression: o1 &= o2. */
+    This is the equivalent of the Python expression: o1 &= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceAnd(PyObject *o1, PyObject *o2);
-+   /* Returns the result of bitwise and of o1 and o2, possibly in-place, or NULL
-+      on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceAnd(PyObject *o1, PyObject *o2);
  
--/* Returns the bitwise exclusive or of o1 by o2, possibly in-place, or NULL
--   on failure.
-+      This is the equivalent of the Python expression: o1 &= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceAnd(PyObject *o1, PyObject *o2);
+ /* Returns the bitwise exclusive or of o1 by o2, possibly in-place, or NULL
+    on failure.
  
--   This is the equivalent of the Python expression: o1 ^= o2. */
+    This is the equivalent of the Python expression: o1 ^= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceXor(PyObject *o1, PyObject *o2);
-+   /* Returns the bitwise exclusive or of o1 by o2, possibly in-place, or NULL
-+      on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceXor(PyObject *o1, PyObject *o2);
  
--/* Returns the result of bitwise or of o1 and o2, possibly in-place,
--   or NULL on failure.
-+      This is the equivalent of the Python expression: o1 ^= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceXor(PyObject *o1, PyObject *o2);
+ /* Returns the result of bitwise or of o1 and o2, possibly in-place,
+    or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 |= o2. */
+    This is the equivalent of the Python expression: o1 |= o2. */
 -PyAPI_FUNC(PyObject *) PyNumber_InPlaceOr(PyObject *o1, PyObject *o2);
-+   /* Returns the result of bitwise or of o1 and o2, possibly in-place,
-+      or NULL on failure.
++PyAPI_FUNC(uint64_t) PyNumber_InPlaceOr(PyObject *o1, PyObject *o2);
  
--/* Returns the integer n converted to a string with a base, with a base
--   marker of 0b, 0o or 0x prefixed if applicable.
-+      This is the equivalent of the Python expression: o1 |= o2. */
-+   PyAPI_FUNC(uint64_t) PyNumber_InPlaceOr(PyObject *o1, PyObject *o2);
+ /* Returns the integer n converted to a string with a base, with a base
+    marker of 0b, 0o or 0x prefixed if applicable.
  
--   If n is not an int object, it is converted with PyNumber_Index first. */
+    If n is not an int object, it is converted with PyNumber_Index first. */
 -PyAPI_FUNC(PyObject *) PyNumber_ToBase(PyObject *n, int base);
-+   /* Returns the integer n converted to a string with a base, with a base
-+      marker of 0b, 0o or 0x prefixed if applicable.
++PyAPI_FUNC(uint64_t) PyNumber_ToBase(PyObject *n, int base);
  
-+      If n is not an int object, it is converted with PyNumber_Index first. */
-+   PyAPI_FUNC(uint64_t) PyNumber_ToBase(PyObject *n, int base);
  
--/* === Sequence protocol ================================================ */
-+   /* === Sequence protocol ================================================ */
+ /* === Sequence protocol ================================================ */
+@@ -654,23 +654,23 @@
+ /* Return the concatenation of o1 and o2 on success, and NULL on failure.
  
--/* Return 1 if the object provides sequence protocol, and zero
--   otherwise.
-+   /* Return 1 if the object provides sequence protocol, and zero
-+      otherwise.
- 
--   This function always succeeds. */
--PyAPI_FUNC(int) PySequence_Check(PyObject *o);
-+      This function always succeeds. */
-+   PyAPI_FUNC(int) PySequence_Check(PyObject *o);
- 
--/* Return the size of sequence object o, or -1 on failure. */
--PyAPI_FUNC(Py_ssize_t) PySequence_Size(PyObject *o);
-+   /* Return the size of sequence object o, or -1 on failure. */
-+   PyAPI_FUNC(Py_ssize_t) PySequence_Size(PyObject *o);
- 
- /* For DLL compatibility */
- #undef PySequence_Length
--PyAPI_FUNC(Py_ssize_t) PySequence_Length(PyObject *o);
-+   PyAPI_FUNC(Py_ssize_t) PySequence_Length(PyObject *o);
- #define PySequence_Length PySequence_Size
- 
-+   /* Return the concatenation of o1 and o2 on success, and NULL on failure.
- 
--/* Return the concatenation of o1 and o2 on success, and NULL on failure.
-+      This is the equivalent of the Python expression: o1 + o2. */
-+   PyAPI_FUNC(uint64_t) PySequence_Concat(PyObject *o1, PyObject *o2);
- 
--   This is the equivalent of the Python expression: o1 + o2. */
+    This is the equivalent of the Python expression: o1 + o2. */
 -PyAPI_FUNC(PyObject *) PySequence_Concat(PyObject *o1, PyObject *o2);
-+   /* Return the result of repeating sequence object 'o' 'count' times,
-+     or NULL on failure.
++PyAPI_FUNC(uint64_t) PySequence_Concat(PyObject *o1, PyObject *o2);
  
--/* Return the result of repeating sequence object 'o' 'count' times,
--  or NULL on failure.
-+     This is the equivalent of the Python expression: o * count. */
-+   PyAPI_FUNC(uint64_t) PySequence_Repeat(PyObject *o, Py_ssize_t count);
+ /* Return the result of repeating sequence object 'o' 'count' times,
+   or NULL on failure.
  
--  This is the equivalent of the Python expression: o * count. */
+   This is the equivalent of the Python expression: o * count. */
 -PyAPI_FUNC(PyObject *) PySequence_Repeat(PyObject *o, Py_ssize_t count);
-+   /* Return the ith element of o, or NULL on failure.
++PyAPI_FUNC(uint64_t) PySequence_Repeat(PyObject *o, Py_ssize_t count);
  
--/* Return the ith element of o, or NULL on failure.
-+      This is the equivalent of the Python expression: o[i]. */
-+   PyAPI_FUNC(uint64_t) PySequence_GetItem(PyObject *o, Py_ssize_t i);
+ /* Return the ith element of o, or NULL on failure.
  
--   This is the equivalent of the Python expression: o[i]. */
+    This is the equivalent of the Python expression: o[i]. */
 -PyAPI_FUNC(PyObject *) PySequence_GetItem(PyObject *o, Py_ssize_t i);
-+   /* Return the slice of sequence object o between i1 and i2, or NULL on failure.
++PyAPI_FUNC(uint64_t) PySequence_GetItem(PyObject *o, Py_ssize_t i);
  
--/* Return the slice of sequence object o between i1 and i2, or NULL on failure.
-+      This is the equivalent of the Python expression: o[i1:i2]. */
-+   PyAPI_FUNC(uint64_t) PySequence_GetSlice(PyObject *o, Py_ssize_t i1, Py_ssize_t i2);
+ /* Return the slice of sequence object o between i1 and i2, or NULL on failure.
  
--   This is the equivalent of the Python expression: o[i1:i2]. */
+    This is the equivalent of the Python expression: o[i1:i2]. */
 -PyAPI_FUNC(PyObject *) PySequence_GetSlice(PyObject *o, Py_ssize_t i1, Py_ssize_t i2);
-+   /* Assign object 'v' to the ith element of the sequence 'o'. Raise an exception
-+      and return -1 on failure; return 0 on success.
++PyAPI_FUNC(uint64_t) PySequence_GetSlice(PyObject *o, Py_ssize_t i1, Py_ssize_t i2);
  
--/* Assign object 'v' to the ith element of the sequence 'o'. Raise an exception
--   and return -1 on failure; return 0 on success.
-+      This is the equivalent of the Python statement o[i] = v. */
-+   PyAPI_FUNC(int) PySequence_SetItem(PyObject *o, Py_ssize_t i, PyObject *v);
+ /* Assign object 'v' to the ith element of the sequence 'o'. Raise an exception
+    and return -1 on failure; return 0 on success.
+@@ -699,11 +699,11 @@
+ /* Returns the sequence 'o' as a tuple on success, and NULL on failure.
  
--   This is the equivalent of the Python statement o[i] = v. */
--PyAPI_FUNC(int) PySequence_SetItem(PyObject *o, Py_ssize_t i, PyObject *v);
-+   /* Delete the 'i'-th element of the sequence 'v'. Returns -1 on failure.
- 
--/* Delete the 'i'-th element of the sequence 'v'. Returns -1 on failure.
-+      This is the equivalent of the Python statement: del o[i]. */
-+   PyAPI_FUNC(int) PySequence_DelItem(PyObject *o, Py_ssize_t i);
- 
--   This is the equivalent of the Python statement: del o[i]. */
--PyAPI_FUNC(int) PySequence_DelItem(PyObject *o, Py_ssize_t i);
-+   /* Assign the sequence object 'v' to the slice in sequence object 'o',
-+      from 'i1' to 'i2'. Returns -1 on failure.
- 
--/* Assign the sequence object 'v' to the slice in sequence object 'o',
--   from 'i1' to 'i2'. Returns -1 on failure.
-+      This is the equivalent of the Python statement: o[i1:i2] = v. */
-+   PyAPI_FUNC(int) PySequence_SetSlice(PyObject *o, Py_ssize_t i1, Py_ssize_t i2,
-+                                       PyObject *v);
- 
--   This is the equivalent of the Python statement: o[i1:i2] = v. */
--PyAPI_FUNC(int) PySequence_SetSlice(PyObject *o, Py_ssize_t i1, Py_ssize_t i2,
--                                    PyObject *v);
-+   /* Delete the slice in sequence object 'o' from 'i1' to 'i2'.
-+      Returns -1 on failure.
- 
--/* Delete the slice in sequence object 'o' from 'i1' to 'i2'.
--   Returns -1 on failure.
-+      This is the equivalent of the Python statement: del o[i1:i2]. */
-+   PyAPI_FUNC(int) PySequence_DelSlice(PyObject *o, Py_ssize_t i1, Py_ssize_t i2);
- 
--   This is the equivalent of the Python statement: del o[i1:i2]. */
--PyAPI_FUNC(int) PySequence_DelSlice(PyObject *o, Py_ssize_t i1, Py_ssize_t i2);
-+   /* Returns the sequence 'o' as a tuple on success, and NULL on failure.
- 
--/* Returns the sequence 'o' as a tuple on success, and NULL on failure.
-+      This is equivalent to the Python expression: tuple(o). */
-+   PyAPI_FUNC(uint64_t) PySequence_Tuple(PyObject *o);
- 
--   This is equivalent to the Python expression: tuple(o). */
+    This is equivalent to the Python expression: tuple(o). */
 -PyAPI_FUNC(PyObject *) PySequence_Tuple(PyObject *o);
-+   /* Returns the sequence 'o' as a list on success, and NULL on failure.
-+      This is equivalent to the Python expression: list(o) */
-+   PyAPI_FUNC(uint64_t) PySequence_List(PyObject *o);
++PyAPI_FUNC(uint64_t) PySequence_Tuple(PyObject *o);
  
--/* Returns the sequence 'o' as a list on success, and NULL on failure.
--   This is equivalent to the Python expression: list(o) */
+ /* Returns the sequence 'o' as a list on success, and NULL on failure.
+    This is equivalent to the Python expression: list(o) */
 -PyAPI_FUNC(PyObject *) PySequence_List(PyObject *o);
-+   /* Return the sequence 'o' as a list, unless it's already a tuple or list.
++PyAPI_FUNC(uint64_t) PySequence_List(PyObject *o);
  
--/* Return the sequence 'o' as a list, unless it's already a tuple or list.
-+      Use PySequence_Fast_GET_ITEM to access the members of this list, and
-+      PySequence_Fast_GET_SIZE to get its length.
+ /* Return the sequence 'o' as a list, unless it's already a tuple or list.
  
--   Use PySequence_Fast_GET_ITEM to access the members of this list, and
--   PySequence_Fast_GET_SIZE to get its length.
--
--   Returns NULL on failure.  If the object does not support iteration, raises a
--   TypeError exception with 'm' as the message text. */
+@@ -712,7 +712,7 @@
+ 
+    Returns NULL on failure.  If the object does not support iteration, raises a
+    TypeError exception with 'm' as the message text. */
 -PyAPI_FUNC(PyObject *) PySequence_Fast(PyObject *o, const char* m);
-+      Returns NULL on failure.  If the object does not support iteration, raises a
-+      TypeError exception with 'm' as the message text. */
-+   PyAPI_FUNC(uint64_t) PySequence_Fast(PyObject *o, const char *m);
++PyAPI_FUNC(uint64_t) PySequence_Fast(PyObject *o, const char* m);
  
  /* Return the size of the sequence 'o', assuming that 'o' was returned by
     PySequence_Fast and is not NULL. */
- #define PySequence_Fast_GET_SIZE(o) \
--    (PyList_Check(o) ? PyList_GET_SIZE(o) : PyTuple_GET_SIZE(o))
-+   (PyList_Check(o) ? PyList_GET_SIZE(o) : PyTuple_GET_SIZE(o))
+@@ -768,13 +768,13 @@
+    resulting object, which could be 'o1', or NULL on failure.
  
- /* Return the 'i'-th element of the sequence 'o', assuming that o was returned
-    by PySequence_Fast, and that i is within bounds. */
--#define PySequence_Fast_GET_ITEM(o, i)\
--     (PyList_Check(o) ? PyList_GET_ITEM(o, i) : PyTuple_GET_ITEM(o, i))
-+#define PySequence_Fast_GET_ITEM(o, i) \
-+   (PyList_Check(o) ? PyList_GET_ITEM(o, i) : PyTuple_GET_ITEM(o, i))
- 
- /* Return a pointer to the underlying item array for
-    an object returned by PySequence_Fast */
--#define PySequence_Fast_ITEMS(sf) \
--    (PyList_Check(sf) ? ((PyListObject *)(sf))->ob_item \
--                      : ((PyTupleObject *)(sf))->ob_item)
--
--/* Return the number of occurrences on value on 'o', that is, return
--   the number of keys for which o[key] == value.
--
--   On failure, return -1.  This is equivalent to the Python expression:
--   o.count(value). */
--PyAPI_FUNC(Py_ssize_t) PySequence_Count(PyObject *o, PyObject *value);
-+#define PySequence_Fast_ITEMS(sf)                      \
-+   (PyList_Check(sf) ? ((PyListObject *)(sf))->ob_item \
-+                     : ((PyTupleObject *)(sf))->ob_item)
-+
-+   /* Return the number of occurrences on value on 'o', that is, return
-+      the number of keys for which o[key] == value.
-+
-+      On failure, return -1.  This is equivalent to the Python expression:
-+      o.count(value). */
-+   PyAPI_FUNC(Py_ssize_t) PySequence_Count(PyObject *o, PyObject *value);
- 
--/* Return 1 if 'ob' is in the sequence 'seq'; 0 if 'ob' is not in the sequence
--   'seq'; -1 on error.
-+   /* Return 1 if 'ob' is in the sequence 'seq'; 0 if 'ob' is not in the sequence
-+      'seq'; -1 on error.
- 
--   Use __contains__ if possible, else _PySequence_IterSearch(). */
--PyAPI_FUNC(int) PySequence_Contains(PyObject *seq, PyObject *ob);
-+      Use __contains__ if possible, else _PySequence_IterSearch(). */
-+   PyAPI_FUNC(int) PySequence_Contains(PyObject *seq, PyObject *ob);
- 
- /* For DLL-level backwards compatibility */
- #undef PySequence_In
--/* Determine if the sequence 'o' contains 'value'. If an item in 'o' is equal
--   to 'value', return 1, otherwise return 0. On error, return -1.
-+   /* Determine if the sequence 'o' contains 'value'. If an item in 'o' is equal
-+      to 'value', return 1, otherwise return 0. On error, return -1.
- 
--   This is equivalent to the Python expression: value in o. */
--PyAPI_FUNC(int) PySequence_In(PyObject *o, PyObject *value);
-+      This is equivalent to the Python expression: value in o. */
-+   PyAPI_FUNC(int) PySequence_In(PyObject *o, PyObject *value);
- 
- /* For source-level backwards compatibility */
- #define PySequence_In PySequence_Contains
- 
-+   /* Return the first index for which o[i] == value.
-+      On error, return -1.
- 
--/* Return the first index for which o[i] == value.
--   On error, return -1.
--
--   This is equivalent to the Python expression: o.index(value). */
--PyAPI_FUNC(Py_ssize_t) PySequence_Index(PyObject *o, PyObject *value);
-+      This is equivalent to the Python expression: o.index(value). */
-+   PyAPI_FUNC(Py_ssize_t) PySequence_Index(PyObject *o, PyObject *value);
- 
-+   /* --- In-place versions of some of the above Sequence functions --- */
- 
--/* --- In-place versions of some of the above Sequence functions --- */
-+   /* Append sequence 'o2' to sequence 'o1', in-place when possible. Return the
-+      resulting object, which could be 'o1', or NULL on failure.
- 
--/* Append sequence 'o2' to sequence 'o1', in-place when possible. Return the
--   resulting object, which could be 'o1', or NULL on failure.
-+     This is the equivalent of the Python expression: o1 += o2. */
-+   PyAPI_FUNC(uint64_t) PySequence_InPlaceConcat(PyObject *o1, PyObject *o2);
- 
--  This is the equivalent of the Python expression: o1 += o2. */
+   This is the equivalent of the Python expression: o1 += o2. */
 -PyAPI_FUNC(PyObject *) PySequence_InPlaceConcat(PyObject *o1, PyObject *o2);
-+   /* Repeat sequence 'o' by 'count', in-place when possible. Return the resulting
-+      object, which could be 'o', or NULL on failure.
++PyAPI_FUNC(uint64_t) PySequence_InPlaceConcat(PyObject *o1, PyObject *o2);
  
--/* Repeat sequence 'o' by 'count', in-place when possible. Return the resulting
--   object, which could be 'o', or NULL on failure.
-+      This is the equivalent of the Python expression: o1 *= count.  */
-+   PyAPI_FUNC(uint64_t) PySequence_InPlaceRepeat(PyObject *o, Py_ssize_t count);
+ /* Repeat sequence 'o' by 'count', in-place when possible. Return the resulting
+    object, which could be 'o', or NULL on failure.
  
--   This is the equivalent of the Python expression: o1 *= count.  */
+    This is the equivalent of the Python expression: o1 *= count.  */
 -PyAPI_FUNC(PyObject *) PySequence_InPlaceRepeat(PyObject *o, Py_ssize_t count);
-+   /* === Mapping protocol ================================================= */
++PyAPI_FUNC(uint64_t) PySequence_InPlaceRepeat(PyObject *o, Py_ssize_t count);
  
-+   /* Return 1 if the object provides mapping protocol, and 0 otherwise.
  
--/* === Mapping protocol ================================================= */
-+      This function always succeeds. */
-+   PyAPI_FUNC(int) PyMapping_Check(PyObject *o);
+ /* === Mapping protocol ================================================= */
+@@ -831,21 +831,21 @@
  
--/* Return 1 if the object provides mapping protocol, and 0 otherwise.
--
--   This function always succeeds. */
--PyAPI_FUNC(int) PyMapping_Check(PyObject *o);
--
--/* Returns the number of keys in mapping object 'o' on success, and -1 on
--  failure. This is equivalent to the Python expression: len(o). */
--PyAPI_FUNC(Py_ssize_t) PyMapping_Size(PyObject *o);
-+   /* Returns the number of keys in mapping object 'o' on success, and -1 on
-+     failure. This is equivalent to the Python expression: len(o). */
-+   PyAPI_FUNC(Py_ssize_t) PyMapping_Size(PyObject *o);
- 
- /* For DLL compatibility */
- #undef PyMapping_Length
--PyAPI_FUNC(Py_ssize_t) PyMapping_Length(PyObject *o);
-+   PyAPI_FUNC(Py_ssize_t) PyMapping_Length(PyObject *o);
- #define PyMapping_Length PyMapping_Size
- 
--
- /* Implemented as a macro:
- 
-    int PyMapping_DelItemString(PyObject *o, const char *key);
-@@ -802,7 +772,7 @@
-    failure.
- 
-    This is equivalent to the Python statement: del o[key]. */
--#define PyMapping_DelItemString(O,K) PyObject_DelItemString((O),(K))
-+#define PyMapping_DelItemString(O, K) PyObject_DelItemString((O), (K))
- 
- /* Implemented as a macro:
- 
-@@ -812,59 +782,59 @@
-    Returns -1 on failure.
- 
-    This is equivalent to the Python statement: del o[key]. */
--#define PyMapping_DelItem(O,K) PyObject_DelItem((O),(K))
-+#define PyMapping_DelItem(O, K) PyObject_DelItem((O), (K))
- 
--/* On success, return 1 if the mapping object 'o' has the key 'key',
--   and 0 otherwise.
-+   /* On success, return 1 if the mapping object 'o' has the key 'key',
-+      and 0 otherwise.
- 
--   This is equivalent to the Python expression: key in o.
-+      This is equivalent to the Python expression: key in o.
- 
--   This function always succeeds. */
--PyAPI_FUNC(int) PyMapping_HasKeyString(PyObject *o, const char *key);
-+      This function always succeeds. */
-+   PyAPI_FUNC(int) PyMapping_HasKeyString(PyObject *o, const char *key);
- 
--/* Return 1 if the mapping object has the key 'key', and 0 otherwise.
-+   /* Return 1 if the mapping object has the key 'key', and 0 otherwise.
- 
--   This is equivalent to the Python expression: key in o.
-+      This is equivalent to the Python expression: key in o.
- 
--   This function always succeeds. */
--PyAPI_FUNC(int) PyMapping_HasKey(PyObject *o, PyObject *key);
-+      This function always succeeds. */
-+   PyAPI_FUNC(int) PyMapping_HasKey(PyObject *o, PyObject *key);
- 
--/* On success, return a list or tuple of the keys in mapping object 'o'.
--   On failure, return NULL. */
+ /* On success, return a list or tuple of the keys in mapping object 'o'.
+    On failure, return NULL. */
 -PyAPI_FUNC(PyObject *) PyMapping_Keys(PyObject *o);
-+   /* On success, return a list or tuple of the keys in mapping object 'o'.
-+      On failure, return NULL. */
-+   PyAPI_FUNC(uint64_t) PyMapping_Keys(PyObject *o);
++PyAPI_FUNC(uint64_t) PyMapping_Keys(PyObject *o);
  
--/* On success, return a list or tuple of the values in mapping object 'o'.
--   On failure, return NULL. */
+ /* On success, return a list or tuple of the values in mapping object 'o'.
+    On failure, return NULL. */
 -PyAPI_FUNC(PyObject *) PyMapping_Values(PyObject *o);
-+   /* On success, return a list or tuple of the values in mapping object 'o'.
-+      On failure, return NULL. */
-+   PyAPI_FUNC(uint64_t) PyMapping_Values(PyObject *o);
++PyAPI_FUNC(uint64_t) PyMapping_Values(PyObject *o);
  
--/* On success, return a list or tuple of the items in mapping object 'o',
--   where each item is a tuple containing a key-value pair. On failure, return
--   NULL. */
+ /* On success, return a list or tuple of the items in mapping object 'o',
+    where each item is a tuple containing a key-value pair. On failure, return
+    NULL. */
 -PyAPI_FUNC(PyObject *) PyMapping_Items(PyObject *o);
-+   /* On success, return a list or tuple of the items in mapping object 'o',
-+      where each item is a tuple containing a key-value pair. On failure, return
-+      NULL. */
-+   PyAPI_FUNC(uint64_t) PyMapping_Items(PyObject *o);
++PyAPI_FUNC(uint64_t) PyMapping_Items(PyObject *o);
  
--/* Return element of 'o' corresponding to the string 'key' or NULL on failure.
-+   /* Return element of 'o' corresponding to the string 'key' or NULL on failure.
+ /* Return element of 'o' corresponding to the string 'key' or NULL on failure.
  
--   This is the equivalent of the Python expression: o[key]. */
+    This is the equivalent of the Python expression: o[key]. */
 -PyAPI_FUNC(PyObject *) PyMapping_GetItemString(PyObject *o,
--                                               const char *key);
-+      This is the equivalent of the Python expression: o[key]. */
-+   PyAPI_FUNC(uint64_t) PyMapping_GetItemString(PyObject *o,
-+                                                const char *key);
++PyAPI_FUNC(uint64_t) PyMapping_GetItemString(PyObject *o,
+                                                const char *key);
  
--/* Map the string 'key' to the value 'v' in the mapping 'o'.
--   Returns -1 on failure.
-+   /* Map the string 'key' to the value 'v' in the mapping 'o'.
-+      Returns -1 on failure.
- 
--   This is the equivalent of the Python statement: o[key]=v. */
--PyAPI_FUNC(int) PyMapping_SetItemString(PyObject *o, const char *key,
--                                        PyObject *value);
-+      This is the equivalent of the Python statement: o[key]=v. */
-+   PyAPI_FUNC(int) PyMapping_SetItemString(PyObject *o, const char *key,
-+                                           PyObject *value);
- 
--/* isinstance(object, typeorclass) */
--PyAPI_FUNC(int) PyObject_IsInstance(PyObject *object, PyObject *typeorclass);
-+   /* isinstance(object, typeorclass) */
-+   PyAPI_FUNC(int) PyObject_IsInstance(PyObject *object, PyObject *typeorclass);
- 
--/* issubclass(object, typeorclass) */
--PyAPI_FUNC(int) PyObject_IsSubclass(PyObject *object, PyObject *typeorclass);
-+   /* issubclass(object, typeorclass) */
-+   PyAPI_FUNC(int) PyObject_IsSubclass(PyObject *object, PyObject *typeorclass);
- 
- #ifndef Py_LIMITED_API
--#  define Py_CPYTHON_ABSTRACTOBJECT_H
--#  include "cpython/abstract.h"
--#  undef Py_CPYTHON_ABSTRACTOBJECT_H
-+#define Py_CPYTHON_ABSTRACTOBJECT_H
-+#include "cpython/abstract.h"
-+#undef Py_CPYTHON_ABSTRACTOBJECT_H
- #endif
- 
- #ifdef __cplusplus
+ /* Map the string 'key' to the value 'v' in the mapping 'o'.
 --- boolobject.h
 +++ boolobject.h
 @@ -35,7 +35,7 @@
@@ -3347,550 +2513,1598 @@ Only in wasmpy_build/include/cp311: pyconfig.h
  #  define Py_CPYTHON_TUPLEOBJECT_H
 --- unicodeobject.h
 +++ unicodeobject.h
-@@ -127,19 +127,19 @@
- /* === Public API ========================================================= */
+@@ -1,7 +1,7 @@
+ #ifndef Py_UNICODEOBJECT_H
+ #define Py_UNICODEOBJECT_H
  
- /* Similar to PyUnicode_FromUnicode(), but u points to UTF-8 encoded bytes */
--PyAPI_FUNC(PyObject*) PyUnicode_FromStringAndSize(
-+PyAPI_FUNC(uint64_t) PyUnicode_FromStringAndSize(
-     const char *u,             /* UTF-8 encoded string */
-     Py_ssize_t size            /* size of buffer */
-     );
+-#include <stdarg.h>               // va_list
++#include <stdarg.h> // va_list
  
- /* Similar to PyUnicode_FromUnicode(), but u points to null-terminated
-    UTF-8 encoded bytes.  The size is determined with strlen(). */
--PyAPI_FUNC(PyObject*) PyUnicode_FromString(
-+PyAPI_FUNC(uint64_t) PyUnicode_FromString(
-     const char *u              /* UTF-8 encoded string */
-     );
+ /*
  
- #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
--PyAPI_FUNC(PyObject*) PyUnicode_Substring(
-+PyAPI_FUNC(uint64_t) PyUnicode_Substring(
-     PyObject *str,
-     Py_ssize_t start,
-     Py_ssize_t end);
-@@ -151,7 +151,7 @@
-    the buffer is smaller than the string. Return buffer on success.
+@@ -88,13 +88,13 @@
+    PyUnicode_AsWideChar() and PyUnicode_AsWideCharString(). */
  
-    buflen is the length of the buffer in (Py_UCS4) characters. */
--PyAPI_FUNC(Py_UCS4*) PyUnicode_AsUCS4(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsUCS4(
-     PyObject *unicode,
-     Py_UCS4* buffer,
-     Py_ssize_t buflen,
-@@ -160,7 +160,7 @@
- /* Copy the string into a UCS4 buffer. A new buffer is allocated using
-  * PyMem_Malloc; if this fails, NULL is returned with a memory error
-    exception set. */
--PyAPI_FUNC(Py_UCS4*) PyUnicode_AsUCS4Copy(PyObject *unicode);
-+PyAPI_FUNC(uint64_t) PyUnicode_AsUCS4Copy(PyObject *unicode);
+ #ifdef HAVE_USABLE_WCHAR_T
+-# ifndef HAVE_WCHAR_H
+-#  define HAVE_WCHAR_H
+-# endif
++#ifndef HAVE_WCHAR_H
++#define HAVE_WCHAR_H
++#endif
  #endif
  
- #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
-@@ -232,7 +232,7 @@
+ #ifdef HAVE_WCHAR_H
+-#  include <wchar.h>
++#include <wchar.h>
+ #endif
  
- */
+ /* Py_UCS4 and Py_UCS2 are typedefs for the respective
+@@ -104,943 +104,935 @@
+ typedef uint8_t Py_UCS1;
+ 
+ #ifdef __cplusplus
+-extern "C" {
++extern "C"
++{
+ #endif
+ 
+-
+-PyAPI_DATA(PyTypeObject) PyUnicode_Type;
+-PyAPI_DATA(PyTypeObject) PyUnicodeIter_Type;
++    PyAPI_DATA(PyTypeObject) PyUnicode_Type;
++    PyAPI_DATA(PyTypeObject) PyUnicodeIter_Type;
+ 
+ #define PyUnicode_Check(op) \
+     PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_UNICODE_SUBCLASS)
+ #define PyUnicode_CheckExact(op) Py_IS_TYPE(op, &PyUnicode_Type)
+ 
+-/* --- Constants ---------------------------------------------------------- */
++    /* --- Constants ---------------------------------------------------------- */
+ 
+-/* This Unicode character will be used as replacement character during
+-   decoding if the errors argument is set to "replace". Note: the
+-   Unicode character U+FFFD is the official REPLACEMENT CHARACTER in
+-   Unicode 3.0. */
++    /* This Unicode character will be used as replacement character during
++       decoding if the errors argument is set to "replace". Note: the
++       Unicode character U+FFFD is the official REPLACEMENT CHARACTER in
++       Unicode 3.0. */
+ 
+-#define Py_UNICODE_REPLACEMENT_CHARACTER ((Py_UCS4) 0xFFFD)
++#define Py_UNICODE_REPLACEMENT_CHARACTER ((Py_UCS4)0xFFFD)
+ 
+-/* === Public API ========================================================= */
++    /* === Public API ========================================================= */
+ 
+-/* Similar to PyUnicode_FromUnicode(), but u points to UTF-8 encoded bytes */
+-PyAPI_FUNC(PyObject*) PyUnicode_FromStringAndSize(
+-    const char *u,             /* UTF-8 encoded string */
+-    Py_ssize_t size            /* size of buffer */
++    /* Similar to PyUnicode_FromUnicode(), but u points to UTF-8 encoded bytes */
++    PyAPI_FUNC(uint64_t) PyUnicode_FromStringAndSize(
++        const char *u,  /* UTF-8 encoded string */
++        Py_ssize_t size /* size of buffer */
+     );
+ 
+-/* Similar to PyUnicode_FromUnicode(), but u points to null-terminated
+-   UTF-8 encoded bytes.  The size is determined with strlen(). */
+-PyAPI_FUNC(PyObject*) PyUnicode_FromString(
+-    const char *u              /* UTF-8 encoded string */
++    /* Similar to PyUnicode_FromUnicode(), but u points to null-terminated
++       UTF-8 encoded bytes.  The size is determined with strlen(). */
++    PyAPI_FUNC(uint64_t) PyUnicode_FromString(
++        const char *u /* UTF-8 encoded string */
+     );
+ 
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-PyAPI_FUNC(PyObject*) PyUnicode_Substring(
+-    PyObject *str,
+-    Py_ssize_t start,
+-    Py_ssize_t end);
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    PyAPI_FUNC(uint64_t) PyUnicode_Substring(
++        PyObject *str,
++        Py_ssize_t start,
++        Py_ssize_t end);
+ #endif
+ 
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-/* Copy the string into a UCS4 buffer including the null character if copy_null
+-   is set. Return NULL and raise an exception on error. Raise a SystemError if
+-   the buffer is smaller than the string. Return buffer on success.
+-
+-   buflen is the length of the buffer in (Py_UCS4) characters. */
+-PyAPI_FUNC(Py_UCS4*) PyUnicode_AsUCS4(
+-    PyObject *unicode,
+-    Py_UCS4* buffer,
+-    Py_ssize_t buflen,
+-    int copy_null);
+-
+-/* Copy the string into a UCS4 buffer. A new buffer is allocated using
+- * PyMem_Malloc; if this fails, NULL is returned with a memory error
+-   exception set. */
+-PyAPI_FUNC(Py_UCS4*) PyUnicode_AsUCS4Copy(PyObject *unicode);
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    /* Copy the string into a UCS4 buffer including the null character if copy_null
++       is set. Return NULL and raise an exception on error. Raise a SystemError if
++       the buffer is smaller than the string. Return buffer on success.
++
++       buflen is the length of the buffer in (Py_UCS4) characters. */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsUCS4(
++        PyObject *unicode,
++        Py_UCS4 *buffer,
++        Py_ssize_t buflen,
++        int copy_null);
++
++    /* Copy the string into a UCS4 buffer. A new buffer is allocated using
++     * PyMem_Malloc; if this fails, NULL is returned with a memory error
++       exception set. */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsUCS4Copy(PyObject *unicode);
+ #endif
+ 
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-/* Get the length of the Unicode object. */
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    /* Get the length of the Unicode object. */
+ 
+-PyAPI_FUNC(Py_ssize_t) PyUnicode_GetLength(
+-    PyObject *unicode
+-);
++    PyAPI_FUNC(Py_ssize_t) PyUnicode_GetLength(
++        PyObject *unicode);
+ #endif
+ 
+-/* Get the number of Py_UNICODE units in the
+-   string representation. */
++    /* Get the number of Py_UNICODE units in the
++       string representation. */
+ 
+-Py_DEPRECATED(3.3) PyAPI_FUNC(Py_ssize_t) PyUnicode_GetSize(
+-    PyObject *unicode           /* Unicode object */
++    Py_DEPRECATED(3.3) PyAPI_FUNC(Py_ssize_t) PyUnicode_GetSize(
++        PyObject *unicode /* Unicode object */
+     );
+ 
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-/* Read a character from the string. */
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    /* Read a character from the string. */
+ 
+-PyAPI_FUNC(Py_UCS4) PyUnicode_ReadChar(
+-    PyObject *unicode,
+-    Py_ssize_t index
+-    );
++    PyAPI_FUNC(Py_UCS4) PyUnicode_ReadChar(
++        PyObject *unicode,
++        Py_ssize_t index);
+ 
+-/* Write a character to the string. The string must have been created through
+-   PyUnicode_New, must not be shared, and must not have been hashed yet.
++    /* Write a character to the string. The string must have been created through
++       PyUnicode_New, must not be shared, and must not have been hashed yet.
+ 
+-   Return 0 on success, -1 on error. */
++       Return 0 on success, -1 on error. */
+ 
+-PyAPI_FUNC(int) PyUnicode_WriteChar(
+-    PyObject *unicode,
+-    Py_ssize_t index,
+-    Py_UCS4 character
+-    );
++    PyAPI_FUNC(int) PyUnicode_WriteChar(
++        PyObject *unicode,
++        Py_ssize_t index,
++        Py_UCS4 character);
+ #endif
+ 
+-/* Resize a Unicode object. The length is the number of characters, except
+-   if the kind of the string is PyUnicode_WCHAR_KIND: in this case, the length
+-   is the number of Py_UNICODE characters.
++    /* Resize a Unicode object. The length is the number of characters, except
++       if the kind of the string is PyUnicode_WCHAR_KIND: in this case, the length
++       is the number of Py_UNICODE characters.
+ 
+-   *unicode is modified to point to the new (resized) object and 0
+-   returned on success.
++       *unicode is modified to point to the new (resized) object and 0
++       returned on success.
+ 
+-   Try to resize the string in place (which is usually faster than allocating
+-   a new string and copy characters), or create a new string.
++       Try to resize the string in place (which is usually faster than allocating
++       a new string and copy characters), or create a new string.
+ 
+-   Error handling is implemented as follows: an exception is set, -1
+-   is returned and *unicode left untouched.
++       Error handling is implemented as follows: an exception is set, -1
++       is returned and *unicode left untouched.
+ 
+-   WARNING: The function doesn't check string content, the result may not be a
+-            string in canonical representation. */
++       WARNING: The function doesn't check string content, the result may not be a
++                string in canonical representation. */
+ 
+-PyAPI_FUNC(int) PyUnicode_Resize(
+-    PyObject **unicode,         /* Pointer to the Unicode object */
+-    Py_ssize_t length           /* New length */
++    PyAPI_FUNC(int) PyUnicode_Resize(
++        PyObject **unicode, /* Pointer to the Unicode object */
++        Py_ssize_t length   /* New length */
+     );
+ 
+-/* Decode obj to a Unicode object.
++    /* Decode obj to a Unicode object.
+ 
+-   bytes, bytearray and other bytes-like objects are decoded according to the
+-   given encoding and error handler. The encoding and error handler can be
+-   NULL to have the interface use UTF-8 and "strict".
++       bytes, bytearray and other bytes-like objects are decoded according to the
++       given encoding and error handler. The encoding and error handler can be
++       NULL to have the interface use UTF-8 and "strict".
+ 
+-   All other objects (including Unicode objects) raise an exception.
++       All other objects (including Unicode objects) raise an exception.
+ 
+-   The API returns NULL in case of an error. The caller is responsible
+-   for decref'ing the returned objects.
++       The API returns NULL in case of an error. The caller is responsible
++       for decref'ing the returned objects.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_FromEncodedObject(
-+PyAPI_FUNC(uint64_t) PyUnicode_FromEncodedObject(
-     PyObject *obj,              /* Object */
-     const char *encoding,       /* encoding */
-     const char *errors          /* error handling */
-@@ -247,21 +247,21 @@
+-    PyObject *obj,              /* Object */
+-    const char *encoding,       /* encoding */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_FromEncodedObject(
++        PyObject *obj,        /* Object */
++        const char *encoding, /* encoding */
++        const char *errors    /* error handling */
+     );
  
- */
+-/* Copy an instance of a Unicode subtype to a new true Unicode object if
+-   necessary. If obj is already a true Unicode object (not a subtype), return
+-   the reference with *incremented* refcount.
++    /* Copy an instance of a Unicode subtype to a new true Unicode object if
++       necessary. If obj is already a true Unicode object (not a subtype), return
++       the reference with *incremented* refcount.
+ 
+-   The API returns NULL in case of an error. The caller is responsible
+-   for decref'ing the returned objects.
++       The API returns NULL in case of an error. The caller is responsible
++       for decref'ing the returned objects.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_FromObject(
-+PyAPI_FUNC(uint64_t) PyUnicode_FromObject(
-     PyObject *obj      /* Object */
+-    PyObject *obj      /* Object */
++    PyAPI_FUNC(uint64_t) PyUnicode_FromObject(
++        PyObject *obj /* Object */
      );
  
 -PyAPI_FUNC(PyObject *) PyUnicode_FromFormatV(
-+PyAPI_FUNC(uint64_t) PyUnicode_FromFormatV(
-     const char *format,   /* ASCII-encoded string  */
-     va_list vargs
-     );
+-    const char *format,   /* ASCII-encoded string  */
+-    va_list vargs
+-    );
 -PyAPI_FUNC(PyObject *) PyUnicode_FromFormat(
-+PyAPI_FUNC(uint64_t) PyUnicode_FromFormat(
-     const char *format,   /* ASCII-encoded string  */
-     ...
-     );
+-    const char *format,   /* ASCII-encoded string  */
+-    ...
+-    );
++    PyAPI_FUNC(uint64_t) PyUnicode_FromFormatV(
++        const char *format, /* ASCII-encoded string  */
++        va_list vargs);
++    PyAPI_FUNC(uint64_t) PyUnicode_FromFormat(
++        const char *format, /* ASCII-encoded string  */
++        ...);
  
- PyAPI_FUNC(void) PyUnicode_InternInPlace(PyObject **);
+-PyAPI_FUNC(void) PyUnicode_InternInPlace(PyObject **);
 -PyAPI_FUNC(PyObject *) PyUnicode_InternFromString(
-+PyAPI_FUNC(uint64_t) PyUnicode_InternFromString(
-     const char *u              /* UTF-8 encoded string */
+-    const char *u              /* UTF-8 encoded string */
++    PyAPI_FUNC(void) PyUnicode_InternInPlace(PyObject **);
++    PyAPI_FUNC(uint64_t) PyUnicode_InternFromString(
++        const char *u /* UTF-8 encoded string */
      );
  
-@@ -278,7 +278,7 @@
+-// PyUnicode_InternImmortal() is deprecated since Python 3.10
+-// and will be removed in Python 3.12. Use PyUnicode_InternInPlace() instead.
+-Py_DEPRECATED(3.10) PyAPI_FUNC(void) PyUnicode_InternImmortal(PyObject **);
++    // PyUnicode_InternImmortal() is deprecated since Python 3.10
++    // and will be removed in Python 3.12. Use PyUnicode_InternInPlace() instead.
++    Py_DEPRECATED(3.10) PyAPI_FUNC(void) PyUnicode_InternImmortal(PyObject **);
  
-    The buffer is copied into the new object. */
+-/* --- wchar_t support for platforms which support it --------------------- */
++    /* --- wchar_t support for platforms which support it --------------------- */
+ 
+ #ifdef HAVE_WCHAR_H
+ 
+-/* Create a Unicode Object from the wchar_t buffer w of the given
+-   size.
++    /* Create a Unicode Object from the wchar_t buffer w of the given
++       size.
+ 
+-   The buffer is copied into the new object. */
++       The buffer is copied into the new object. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_FromWideChar(
-+PyAPI_FUNC(uint64_t) PyUnicode_FromWideChar(
-     const wchar_t *w,           /* wchar_t buffer */
-     Py_ssize_t size             /* size of buffer */
+-    const wchar_t *w,           /* wchar_t buffer */
+-    Py_ssize_t size             /* size of buffer */
++    PyAPI_FUNC(uint64_t) PyUnicode_FromWideChar(
++        const wchar_t *w, /* wchar_t buffer */
++        Py_ssize_t size   /* size of buffer */
      );
-@@ -309,7 +309,7 @@
-    on success. On error, returns NULL, *size is undefined and raises a
-    MemoryError. */
+ 
+-/* Copies the Unicode Object contents into the wchar_t buffer w.  At
+-   most size wchar_t characters are copied.
++    /* Copies the Unicode Object contents into the wchar_t buffer w.  At
++       most size wchar_t characters are copied.
+ 
+-   Note that the resulting wchar_t string may or may not be
+-   0-terminated.  It is the responsibility of the caller to make sure
+-   that the wchar_t string is 0-terminated in case this is required by
+-   the application.
++       Note that the resulting wchar_t string may or may not be
++       0-terminated.  It is the responsibility of the caller to make sure
++       that the wchar_t string is 0-terminated in case this is required by
++       the application.
+ 
+-   Returns the number of wchar_t characters copied (excluding a
+-   possibly trailing 0-termination character) or -1 in case of an
+-   error. */
++       Returns the number of wchar_t characters copied (excluding a
++       possibly trailing 0-termination character) or -1 in case of an
++       error. */
+ 
+-PyAPI_FUNC(Py_ssize_t) PyUnicode_AsWideChar(
+-    PyObject *unicode,          /* Unicode object */
+-    wchar_t *w,                 /* wchar_t buffer */
+-    Py_ssize_t size             /* size of buffer */
++    PyAPI_FUNC(Py_ssize_t) PyUnicode_AsWideChar(
++        PyObject *unicode, /* Unicode object */
++        wchar_t *w,        /* wchar_t buffer */
++        Py_ssize_t size    /* size of buffer */
+     );
+ 
+-/* Convert the Unicode object to a wide character string. The output string
+-   always ends with a nul character. If size is not NULL, write the number of
+-   wide characters (excluding the null character) into *size.
++    /* Convert the Unicode object to a wide character string. The output string
++       always ends with a nul character. If size is not NULL, write the number of
++       wide characters (excluding the null character) into *size.
+ 
+-   Returns a buffer allocated by PyMem_Malloc() (use PyMem_Free() to free it)
+-   on success. On error, returns NULL, *size is undefined and raises a
+-   MemoryError. */
++       Returns a buffer allocated by PyMem_Malloc() (use PyMem_Free() to free it)
++       on success. On error, returns NULL, *size is undefined and raises a
++       MemoryError. */
  
 -PyAPI_FUNC(wchar_t*) PyUnicode_AsWideCharString(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsWideCharString(
-     PyObject *unicode,          /* Unicode object */
-     Py_ssize_t *size            /* number of characters of the result */
+-    PyObject *unicode,          /* Unicode object */
+-    Py_ssize_t *size            /* number of characters of the result */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsWideCharString(
++        PyObject *unicode, /* Unicode object */
++        Py_ssize_t *size   /* number of characters of the result */
      );
-@@ -325,7 +325,7 @@
  
- */
+ #endif
+ 
+-/* --- Unicode ordinals --------------------------------------------------- */
++    /* --- Unicode ordinals --------------------------------------------------- */
+ 
+-/* Create a Unicode Object from the given Unicode code point ordinal.
++    /* Create a Unicode Object from the given Unicode code point ordinal.
+ 
+-   The ordinal must be in range(0x110000). A ValueError is
+-   raised in case it is not.
++       The ordinal must be in range(0x110000). A ValueError is
++       raised in case it is not.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_FromOrdinal(int ordinal);
-+PyAPI_FUNC(uint64_t) PyUnicode_FromOrdinal(int ordinal);
++    PyAPI_FUNC(uint64_t) PyUnicode_FromOrdinal(int ordinal);
  
- /* === Builtin Codecs =====================================================
+-/* === Builtin Codecs =====================================================
++    /* === Builtin Codecs =====================================================
  
-@@ -348,14 +348,14 @@
- /* --- Manage the default encoding ---------------------------------------- */
+-   Many of these APIs take two arguments encoding and errors. These
+-   parameters encoding and errors have the same semantics as the ones
+-   of the builtin str() API.
++       Many of these APIs take two arguments encoding and errors. These
++       parameters encoding and errors have the same semantics as the ones
++       of the builtin str() API.
  
- /* Returns "utf-8".  */
+-   Setting encoding to NULL causes the default encoding (UTF-8) to be used.
++       Setting encoding to NULL causes the default encoding (UTF-8) to be used.
+ 
+-   Error handling is set by errors which may also be set to NULL
+-   meaning to use the default handling defined for the codec. Default
+-   error handling for all builtin codecs is "strict" (ValueErrors are
+-   raised).
++       Error handling is set by errors which may also be set to NULL
++       meaning to use the default handling defined for the codec. Default
++       error handling for all builtin codecs is "strict" (ValueErrors are
++       raised).
+ 
+-   The codecs all use a similar interface. Only deviation from the
+-   generic ones are documented.
++       The codecs all use a similar interface. Only deviation from the
++       generic ones are documented.
+ 
+-*/
++    */
+ 
+-/* --- Manage the default encoding ---------------------------------------- */
++    /* --- Manage the default encoding ---------------------------------------- */
+ 
+-/* Returns "utf-8".  */
 -PyAPI_FUNC(const char*) PyUnicode_GetDefaultEncoding(void);
-+PyAPI_FUNC(uint64_t) PyUnicode_GetDefaultEncoding(void);
++    /* Returns "utf-8".  */
++    PyAPI_FUNC(uint64_t) PyUnicode_GetDefaultEncoding(void);
  
- /* --- Generic Codecs ----------------------------------------------------- */
+-/* --- Generic Codecs ----------------------------------------------------- */
++    /* --- Generic Codecs ----------------------------------------------------- */
  
- /* Create a Unicode object by decoding the encoded string s of the
-    given size. */
+-/* Create a Unicode object by decoding the encoded string s of the
+-   given size. */
++    /* Create a Unicode object by decoding the encoded string s of the
++       given size. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_Decode(
-+PyAPI_FUNC(uint64_t) PyUnicode_Decode(
-     const char *s,              /* encoded string */
-     Py_ssize_t size,            /* size of buffer */
-     const char *encoding,       /* encoding */
-@@ -369,7 +369,7 @@
-    Use PyCodec_Decode() to decode with rot13 and non-standard codecs
-    that decode from str. */
+-    const char *s,              /* encoded string */
+-    Py_ssize_t size,            /* size of buffer */
+-    const char *encoding,       /* encoding */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_Decode(
++        const char *s,        /* encoded string */
++        Py_ssize_t size,      /* size of buffer */
++        const char *encoding, /* encoding */
++        const char *errors    /* error handling */
+     );
+ 
+-/* Decode a Unicode object unicode and return the result as Python
+-   object.
++    /* Decode a Unicode object unicode and return the result as Python
++       object.
+ 
+-   This API is DEPRECATED. The only supported standard encoding is rot13.
+-   Use PyCodec_Decode() to decode with rot13 and non-standard codecs
+-   that decode from str. */
++       This API is DEPRECATED. The only supported standard encoding is rot13.
++       Use PyCodec_Decode() to decode with rot13 and non-standard codecs
++       that decode from str. */
  
 -Py_DEPRECATED(3.6) PyAPI_FUNC(PyObject*) PyUnicode_AsDecodedObject(
-+Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsDecodedObject(
-     PyObject *unicode,          /* Unicode object */
-     const char *encoding,       /* encoding */
-     const char *errors          /* error handling */
-@@ -382,7 +382,7 @@
-    Use PyCodec_Decode() to decode with rot13 and non-standard codecs
-    that decode from str to str. */
+-    PyObject *unicode,          /* Unicode object */
+-    const char *encoding,       /* encoding */
+-    const char *errors          /* error handling */
++    Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsDecodedObject(
++        PyObject *unicode,    /* Unicode object */
++        const char *encoding, /* encoding */
++        const char *errors    /* error handling */
+     );
+ 
+-/* Decode a Unicode object unicode and return the result as Unicode
+-   object.
++    /* Decode a Unicode object unicode and return the result as Unicode
++       object.
+ 
+-   This API is DEPRECATED. The only supported standard encoding is rot13.
+-   Use PyCodec_Decode() to decode with rot13 and non-standard codecs
+-   that decode from str to str. */
++       This API is DEPRECATED. The only supported standard encoding is rot13.
++       Use PyCodec_Decode() to decode with rot13 and non-standard codecs
++       that decode from str to str. */
  
 -Py_DEPRECATED(3.6) PyAPI_FUNC(PyObject*) PyUnicode_AsDecodedUnicode(
-+Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsDecodedUnicode(
-     PyObject *unicode,          /* Unicode object */
-     const char *encoding,       /* encoding */
-     const char *errors          /* error handling */
-@@ -396,7 +396,7 @@
-    Use PyCodec_Encode() for encoding with rot13 and non-standard codecs
-    that encode form str to non-bytes. */
+-    PyObject *unicode,          /* Unicode object */
+-    const char *encoding,       /* encoding */
+-    const char *errors          /* error handling */
++    Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsDecodedUnicode(
++        PyObject *unicode,    /* Unicode object */
++        const char *encoding, /* encoding */
++        const char *errors    /* error handling */
+     );
+ 
+-/* Encodes a Unicode object and returns the result as Python
+-   object.
++    /* Encodes a Unicode object and returns the result as Python
++       object.
+ 
+-   This API is DEPRECATED.  It is superseded by PyUnicode_AsEncodedString()
+-   since all standard encodings (except rot13) encode str to bytes.
+-   Use PyCodec_Encode() for encoding with rot13 and non-standard codecs
+-   that encode form str to non-bytes. */
++       This API is DEPRECATED.  It is superseded by PyUnicode_AsEncodedString()
++       since all standard encodings (except rot13) encode str to bytes.
++       Use PyCodec_Encode() for encoding with rot13 and non-standard codecs
++       that encode form str to non-bytes. */
  
 -Py_DEPRECATED(3.6) PyAPI_FUNC(PyObject*) PyUnicode_AsEncodedObject(
-+Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsEncodedObject(
-     PyObject *unicode,          /* Unicode object */
-     const char *encoding,       /* encoding */
-     const char *errors          /* error handling */
-@@ -405,7 +405,7 @@
- /* Encodes a Unicode object and returns the result as Python string
-    object. */
+-    PyObject *unicode,          /* Unicode object */
+-    const char *encoding,       /* encoding */
+-    const char *errors          /* error handling */
++    Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsEncodedObject(
++        PyObject *unicode,    /* Unicode object */
++        const char *encoding, /* encoding */
++        const char *errors    /* error handling */
+     );
+ 
+-/* Encodes a Unicode object and returns the result as Python string
+-   object. */
++    /* Encodes a Unicode object and returns the result as Python string
++       object. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsEncodedString(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsEncodedString(
-     PyObject *unicode,          /* Unicode object */
-     const char *encoding,       /* encoding */
-     const char *errors          /* error handling */
-@@ -418,7 +418,7 @@
-    Use PyCodec_Encode() to encode with rot13 and non-standard codecs
-    that encode from str to str. */
+-    PyObject *unicode,          /* Unicode object */
+-    const char *encoding,       /* encoding */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsEncodedString(
++        PyObject *unicode,    /* Unicode object */
++        const char *encoding, /* encoding */
++        const char *errors    /* error handling */
+     );
+ 
+-/* Encodes a Unicode object and returns the result as Unicode
+-   object.
++    /* Encodes a Unicode object and returns the result as Unicode
++       object.
+ 
+-   This API is DEPRECATED.  The only supported standard encodings is rot13.
+-   Use PyCodec_Encode() to encode with rot13 and non-standard codecs
+-   that encode from str to str. */
++       This API is DEPRECATED.  The only supported standard encodings is rot13.
++       Use PyCodec_Encode() to encode with rot13 and non-standard codecs
++       that encode from str to str. */
  
 -Py_DEPRECATED(3.6) PyAPI_FUNC(PyObject*) PyUnicode_AsEncodedUnicode(
-+Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsEncodedUnicode(
-     PyObject *unicode,          /* Unicode object */
-     const char *encoding,       /* encoding */
-     const char *errors          /* error handling */
-@@ -426,19 +426,19 @@
+-    PyObject *unicode,          /* Unicode object */
+-    const char *encoding,       /* encoding */
+-    const char *errors          /* error handling */
++    Py_DEPRECATED(3.6) PyAPI_FUNC(uint64_t) PyUnicode_AsEncodedUnicode(
++        PyObject *unicode,    /* Unicode object */
++        const char *encoding, /* encoding */
++        const char *errors    /* error handling */
+     );
  
- /* Build an encoding map. */
+-/* Build an encoding map. */
++    /* Build an encoding map. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_BuildEncodingMap(
-+PyAPI_FUNC(uint64_t) PyUnicode_BuildEncodingMap(
-     PyObject* string            /* 256 character map */
-    );
+-    PyObject* string            /* 256 character map */
+-   );
++    PyAPI_FUNC(uint64_t) PyUnicode_BuildEncodingMap(
++        PyObject *string /* 256 character map */
++    );
  
- /* --- UTF-7 Codecs ------------------------------------------------------- */
+-/* --- UTF-7 Codecs ------------------------------------------------------- */
++    /* --- UTF-7 Codecs ------------------------------------------------------- */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF7(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF7(
-     const char *string,         /* UTF-7 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors          /* error handling */
+-    const char *string,         /* UTF-7 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF7(
++        const char *string, /* UTF-7 encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors  /* error handling */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF7Stateful(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF7Stateful(
-     const char *string,         /* UTF-7 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors,         /* error handling */
-@@ -447,20 +447,20 @@
+-    const char *string,         /* UTF-7 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    Py_ssize_t *consumed        /* bytes consumed */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF7Stateful(
++        const char *string,  /* UTF-7 encoded string */
++        Py_ssize_t length,   /* size of string */
++        const char *errors,  /* error handling */
++        Py_ssize_t *consumed /* bytes consumed */
+     );
  
- /* --- UTF-8 Codecs ------------------------------------------------------- */
+-/* --- UTF-8 Codecs ------------------------------------------------------- */
++    /* --- UTF-8 Codecs ------------------------------------------------------- */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF8(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF8(
-     const char *string,         /* UTF-8 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors          /* error handling */
+-    const char *string,         /* UTF-8 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF8(
++        const char *string, /* UTF-8 encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors  /* error handling */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF8Stateful(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF8Stateful(
-     const char *string,         /* UTF-8 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors,         /* error handling */
-     Py_ssize_t *consumed        /* bytes consumed */
+-    const char *string,         /* UTF-8 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    Py_ssize_t *consumed        /* bytes consumed */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF8Stateful(
++        const char *string,  /* UTF-8 encoded string */
++        Py_ssize_t length,   /* size of string */
++        const char *errors,  /* error handling */
++        Py_ssize_t *consumed /* bytes consumed */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsUTF8String(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsUTF8String(
-     PyObject *unicode           /* Unicode object */
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsUTF8String(
++        PyObject *unicode /* Unicode object */
      );
  
-@@ -476,7 +476,7 @@
- */
+-/* Returns a pointer to the default encoding (UTF-8) of the
+-   Unicode object unicode and the size of the encoded representation
+-   in bytes stored in *size.
++    /* Returns a pointer to the default encoding (UTF-8) of the
++       Unicode object unicode and the size of the encoded representation
++       in bytes stored in *size.
  
- #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x030A0000
+-   In case of an error, no *size is set.
++       In case of an error, no *size is set.
+ 
+-   This function caches the UTF-8 encoded string in the unicodeobject
+-   and subsequent calls will return the same string.  The memory is released
+-   when the unicodeobject is deallocated.
+-*/
++       This function caches the UTF-8 encoded string in the unicodeobject
++       and subsequent calls will return the same string.  The memory is released
++       when the unicodeobject is deallocated.
++    */
+ 
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x030A0000
 -PyAPI_FUNC(const char *) PyUnicode_AsUTF8AndSize(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsUTF8AndSize(
-     PyObject *unicode,
-     Py_ssize_t *size);
+-    PyObject *unicode,
+-    Py_ssize_t *size);
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x030A0000
++    PyAPI_FUNC(uint64_t) PyUnicode_AsUTF8AndSize(
++        PyObject *unicode,
++        Py_ssize_t *size);
  #endif
-@@ -506,7 +506,7 @@
  
- */
+-/* --- UTF-32 Codecs ------------------------------------------------------ */
++    /* --- UTF-32 Codecs ------------------------------------------------------ */
+ 
+-/* Decodes length bytes from a UTF-32 encoded buffer string and returns
+-   the corresponding Unicode object.
++    /* Decodes length bytes from a UTF-32 encoded buffer string and returns
++       the corresponding Unicode object.
+ 
+-   errors (if non-NULL) defines the error handling. It defaults
+-   to "strict".
++       errors (if non-NULL) defines the error handling. It defaults
++       to "strict".
+ 
+-   If byteorder is non-NULL, the decoder starts decoding using the
+-   given byte order:
++       If byteorder is non-NULL, the decoder starts decoding using the
++       given byte order:
+ 
+-    *byteorder == -1: little endian
+-    *byteorder == 0:  native order
+-    *byteorder == 1:  big endian
++        *byteorder == -1: little endian
++        *byteorder == 0:  native order
++        *byteorder == 1:  big endian
+ 
+-   In native mode, the first four bytes of the stream are checked for a
+-   BOM mark. If found, the BOM mark is analysed, the byte order
+-   adjusted and the BOM skipped.  In the other modes, no BOM mark
+-   interpretation is done. After completion, *byteorder is set to the
+-   current byte order at the end of input data.
++       In native mode, the first four bytes of the stream are checked for a
++       BOM mark. If found, the BOM mark is analysed, the byte order
++       adjusted and the BOM skipped.  In the other modes, no BOM mark
++       interpretation is done. After completion, *byteorder is set to the
++       current byte order at the end of input data.
+ 
+-   If byteorder is NULL, the codec starts in native order mode.
++       If byteorder is NULL, the codec starts in native order mode.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF32(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF32(
-     const char *string,         /* UTF-32 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors,         /* error handling */
-@@ -515,7 +515,7 @@
-                                    exit */
+-    const char *string,         /* UTF-32 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    int *byteorder              /* pointer to byteorder to use
+-                                   0=native;-1=LE,1=BE; updated on
+-                                   exit */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF32(
++        const char *string, /* UTF-32 encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors, /* error handling */
++        int *byteorder      /* pointer to byteorder to use
++                               0=native;-1=LE,1=BE; updated on
++                               exit */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF32Stateful(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF32Stateful(
-     const char *string,         /* UTF-32 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors,         /* error handling */
-@@ -528,7 +528,7 @@
- /* Returns a Python string using the UTF-32 encoding in native byte
-    order. The string always starts with a BOM mark.  */
- 
--PyAPI_FUNC(PyObject*) PyUnicode_AsUTF32String(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsUTF32String(
-     PyObject *unicode           /* Unicode object */
+-    const char *string,         /* UTF-32 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    int *byteorder,             /* pointer to byteorder to use
+-                                   0=native;-1=LE,1=BE; updated on
+-                                   exit */
+-    Py_ssize_t *consumed        /* bytes consumed */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF32Stateful(
++        const char *string,  /* UTF-32 encoded string */
++        Py_ssize_t length,   /* size of string */
++        const char *errors,  /* error handling */
++        int *byteorder,      /* pointer to byteorder to use
++                                0=native;-1=LE,1=BE; updated on
++                                exit */
++        Py_ssize_t *consumed /* bytes consumed */
      );
  
-@@ -573,7 +573,7 @@
+-/* Returns a Python string using the UTF-32 encoding in native byte
+-   order. The string always starts with a BOM mark.  */
++    /* Returns a Python string using the UTF-32 encoding in native byte
++       order. The string always starts with a BOM mark.  */
  
- */
+-PyAPI_FUNC(PyObject*) PyUnicode_AsUTF32String(
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsUTF32String(
++        PyObject *unicode /* Unicode object */
+     );
+ 
+-/* Returns a Python string object holding the UTF-32 encoded value of
+-   the Unicode data.
++    /* Returns a Python string object holding the UTF-32 encoded value of
++       the Unicode data.
+ 
+-   If byteorder is not 0, output is written according to the following
+-   byte order:
++       If byteorder is not 0, output is written according to the following
++       byte order:
+ 
+-   byteorder == -1: little endian
+-   byteorder == 0:  native byte order (writes a BOM mark)
+-   byteorder == 1:  big endian
++       byteorder == -1: little endian
++       byteorder == 0:  native byte order (writes a BOM mark)
++       byteorder == 1:  big endian
+ 
+-   If byteorder is 0, the output string will always start with the
+-   Unicode BOM mark (U+FEFF). In the other two modes, no BOM mark is
+-   prepended.
++       If byteorder is 0, the output string will always start with the
++       Unicode BOM mark (U+FEFF). In the other two modes, no BOM mark is
++       prepended.
+ 
+-*/
++    */
+ 
+-/* --- UTF-16 Codecs ------------------------------------------------------ */
++    /* --- UTF-16 Codecs ------------------------------------------------------ */
+ 
+-/* Decodes length bytes from a UTF-16 encoded buffer string and returns
+-   the corresponding Unicode object.
++    /* Decodes length bytes from a UTF-16 encoded buffer string and returns
++       the corresponding Unicode object.
+ 
+-   errors (if non-NULL) defines the error handling. It defaults
+-   to "strict".
++       errors (if non-NULL) defines the error handling. It defaults
++       to "strict".
+ 
+-   If byteorder is non-NULL, the decoder starts decoding using the
+-   given byte order:
++       If byteorder is non-NULL, the decoder starts decoding using the
++       given byte order:
+ 
+-    *byteorder == -1: little endian
+-    *byteorder == 0:  native order
+-    *byteorder == 1:  big endian
++        *byteorder == -1: little endian
++        *byteorder == 0:  native order
++        *byteorder == 1:  big endian
+ 
+-   In native mode, the first two bytes of the stream are checked for a
+-   BOM mark. If found, the BOM mark is analysed, the byte order
+-   adjusted and the BOM skipped.  In the other modes, no BOM mark
+-   interpretation is done. After completion, *byteorder is set to the
+-   current byte order at the end of input data.
++       In native mode, the first two bytes of the stream are checked for a
++       BOM mark. If found, the BOM mark is analysed, the byte order
++       adjusted and the BOM skipped.  In the other modes, no BOM mark
++       interpretation is done. After completion, *byteorder is set to the
++       current byte order at the end of input data.
+ 
+-   If byteorder is NULL, the codec starts in native order mode.
++       If byteorder is NULL, the codec starts in native order mode.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF16(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF16(
-     const char *string,         /* UTF-16 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors,         /* error handling */
-@@ -582,7 +582,7 @@
-                                    exit */
+-    const char *string,         /* UTF-16 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    int *byteorder              /* pointer to byteorder to use
+-                                   0=native;-1=LE,1=BE; updated on
+-                                   exit */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF16(
++        const char *string, /* UTF-16 encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors, /* error handling */
++        int *byteorder      /* pointer to byteorder to use
++                               0=native;-1=LE,1=BE; updated on
++                               exit */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF16Stateful(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF16Stateful(
-     const char *string,         /* UTF-16 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors,         /* error handling */
-@@ -595,31 +595,31 @@
- /* Returns a Python string using the UTF-16 encoding in native byte
-    order. The string always starts with a BOM mark.  */
- 
--PyAPI_FUNC(PyObject*) PyUnicode_AsUTF16String(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsUTF16String(
-     PyObject *unicode           /* Unicode object */
+-    const char *string,         /* UTF-16 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    int *byteorder,             /* pointer to byteorder to use
+-                                   0=native;-1=LE,1=BE; updated on
+-                                   exit */
+-    Py_ssize_t *consumed        /* bytes consumed */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUTF16Stateful(
++        const char *string,  /* UTF-16 encoded string */
++        Py_ssize_t length,   /* size of string */
++        const char *errors,  /* error handling */
++        int *byteorder,      /* pointer to byteorder to use
++                                0=native;-1=LE,1=BE; updated on
++                                exit */
++        Py_ssize_t *consumed /* bytes consumed */
      );
  
- /* --- Unicode-Escape Codecs ---------------------------------------------- */
+-/* Returns a Python string using the UTF-16 encoding in native byte
+-   order. The string always starts with a BOM mark.  */
++    /* Returns a Python string using the UTF-16 encoding in native byte
++       order. The string always starts with a BOM mark.  */
+ 
+-PyAPI_FUNC(PyObject*) PyUnicode_AsUTF16String(
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsUTF16String(
++        PyObject *unicode /* Unicode object */
+     );
+ 
+-/* --- Unicode-Escape Codecs ---------------------------------------------- */
++    /* --- Unicode-Escape Codecs ---------------------------------------------- */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeUnicodeEscape(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeUnicodeEscape(
-     const char *string,         /* Unicode-Escape encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors          /* error handling */
+-    const char *string,         /* Unicode-Escape encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeUnicodeEscape(
++        const char *string, /* Unicode-Escape encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors  /* error handling */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsUnicodeEscapeString(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsUnicodeEscapeString(
-     PyObject *unicode           /* Unicode object */
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsUnicodeEscapeString(
++        PyObject *unicode /* Unicode object */
      );
  
- /* --- Raw-Unicode-Escape Codecs ------------------------------------------ */
+-/* --- Raw-Unicode-Escape Codecs ------------------------------------------ */
++    /* --- Raw-Unicode-Escape Codecs ------------------------------------------ */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeRawUnicodeEscape(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeRawUnicodeEscape(
-     const char *string,         /* Raw-Unicode-Escape encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors          /* error handling */
+-    const char *string,         /* Raw-Unicode-Escape encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeRawUnicodeEscape(
++        const char *string, /* Raw-Unicode-Escape encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors  /* error handling */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsRawUnicodeEscapeString(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsRawUnicodeEscapeString(
-     PyObject *unicode           /* Unicode object */
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsRawUnicodeEscapeString(
++        PyObject *unicode /* Unicode object */
      );
  
-@@ -627,13 +627,13 @@
+-/* --- Latin-1 Codecs -----------------------------------------------------
++    /* --- Latin-1 Codecs -----------------------------------------------------
  
-    Note: Latin-1 corresponds to the first 256 Unicode ordinals. */
+-   Note: Latin-1 corresponds to the first 256 Unicode ordinals. */
++       Note: Latin-1 corresponds to the first 256 Unicode ordinals. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeLatin1(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeLatin1(
-     const char *string,         /* Latin-1 encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors          /* error handling */
+-    const char *string,         /* Latin-1 encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeLatin1(
++        const char *string, /* Latin-1 encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors  /* error handling */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsLatin1String(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsLatin1String(
-     PyObject *unicode           /* Unicode object */
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsLatin1String(
++        PyObject *unicode /* Unicode object */
      );
  
-@@ -643,13 +643,13 @@
+-/* --- ASCII Codecs -------------------------------------------------------
++    /* --- ASCII Codecs -------------------------------------------------------
  
- */
+-   Only 7-bit ASCII data is excepted. All other codes generate errors.
++       Only 7-bit ASCII data is excepted. All other codes generate errors.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeASCII(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeASCII(
-     const char *string,         /* ASCII encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors          /* error handling */
+-    const char *string,         /* ASCII encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeASCII(
++        const char *string, /* ASCII encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors  /* error handling */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsASCIIString(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsASCIIString(
-     PyObject *unicode           /* Unicode object */
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsASCIIString(
++        PyObject *unicode /* Unicode object */
      );
  
-@@ -670,14 +670,14 @@
+-/* --- Character Map Codecs -----------------------------------------------
++    /* --- Character Map Codecs -----------------------------------------------
  
- */
+-   This codec uses mappings to encode and decode characters.
++       This codec uses mappings to encode and decode characters.
+ 
+-   Decoding mappings must map byte ordinals (integers in the range from 0 to
+-   255) to Unicode strings, integers (which are then interpreted as Unicode
+-   ordinals) or None.  Unmapped data bytes (ones which cause a LookupError)
+-   as well as mapped to None, 0xFFFE or '\ufffe' are treated as "undefined
+-   mapping" and cause an error.
++       Decoding mappings must map byte ordinals (integers in the range from 0 to
++       255) to Unicode strings, integers (which are then interpreted as Unicode
++       ordinals) or None.  Unmapped data bytes (ones which cause a LookupError)
++       as well as mapped to None, 0xFFFE or '\ufffe' are treated as "undefined
++       mapping" and cause an error.
+ 
+-   Encoding mappings must map Unicode ordinal integers to bytes objects,
+-   integers in the range from 0 to 255 or None.  Unmapped character
+-   ordinals (ones which cause a LookupError) as well as mapped to
+-   None are treated as "undefined mapping" and cause an error.
++       Encoding mappings must map Unicode ordinal integers to bytes objects,
++       integers in the range from 0 to 255 or None.  Unmapped character
++       ordinals (ones which cause a LookupError) as well as mapped to
++       None are treated as "undefined mapping" and cause an error.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeCharmap(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeCharmap(
-     const char *string,         /* Encoded string */
-     Py_ssize_t length,          /* size of string */
-     PyObject *mapping,          /* decoding mapping */
-     const char *errors          /* error handling */
+-    const char *string,         /* Encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    PyObject *mapping,          /* decoding mapping */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeCharmap(
++        const char *string, /* Encoded string */
++        Py_ssize_t length,  /* size of string */
++        PyObject *mapping,  /* decoding mapping */
++        const char *errors  /* error handling */
      );
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsCharmapString(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsCharmapString(
-     PyObject *unicode,          /* Unicode object */
-     PyObject *mapping           /* encoding mapping */
+-    PyObject *unicode,          /* Unicode object */
+-    PyObject *mapping           /* encoding mapping */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsCharmapString(
++        PyObject *unicode, /* Unicode object */
++        PyObject *mapping  /* encoding mapping */
      );
-@@ -685,13 +685,13 @@
- /* --- MBCS codecs for Windows -------------------------------------------- */
+ 
+-/* --- MBCS codecs for Windows -------------------------------------------- */
++    /* --- MBCS codecs for Windows -------------------------------------------- */
  
  #ifdef MS_WINDOWS
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeMBCS(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeMBCS(
-     const char *string,         /* MBCS encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors          /* error handling */
-     );
- 
+-    const char *string,         /* MBCS encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors          /* error handling */
+-    );
+-
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeMBCSStateful(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeMBCSStateful(
-     const char *string,         /* MBCS encoded string */
-     Py_ssize_t length,          /* size of string */
-     const char *errors,         /* error handling */
-@@ -699,7 +699,7 @@
-     );
- 
- #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-    const char *string,         /* MBCS encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    Py_ssize_t *consumed        /* bytes consumed */
+-    );
+-
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeCodePageStateful(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeCodePageStateful(
-     int code_page,              /* code page number */
-     const char *string,         /* encoded string */
-     Py_ssize_t length,          /* size of string */
-@@ -708,12 +708,12 @@
+-    int code_page,              /* code page number */
+-    const char *string,         /* encoded string */
+-    Py_ssize_t length,          /* size of string */
+-    const char *errors,         /* error handling */
+-    Py_ssize_t *consumed        /* bytes consumed */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeMBCS(
++        const char *string, /* MBCS encoded string */
++        Py_ssize_t length,  /* size of string */
++        const char *errors  /* error handling */
++    );
++
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeMBCSStateful(
++        const char *string,  /* MBCS encoded string */
++        Py_ssize_t length,   /* size of string */
++        const char *errors,  /* error handling */
++        Py_ssize_t *consumed /* bytes consumed */
++    );
++
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeCodePageStateful(
++        int code_page,       /* code page number */
++        const char *string,  /* encoded string */
++        Py_ssize_t length,   /* size of string */
++        const char *errors,  /* error handling */
++        Py_ssize_t *consumed /* bytes consumed */
      );
  #endif
  
 -PyAPI_FUNC(PyObject*) PyUnicode_AsMBCSString(
-+PyAPI_FUNC(uint64_t) PyUnicode_AsMBCSString(
-     PyObject *unicode           /* Unicode object */
+-    PyObject *unicode           /* Unicode object */
++    PyAPI_FUNC(uint64_t) PyUnicode_AsMBCSString(
++        PyObject *unicode /* Unicode object */
      );
  
- #if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
 -PyAPI_FUNC(PyObject*) PyUnicode_EncodeCodePage(
-+PyAPI_FUNC(uint64_t) PyUnicode_EncodeCodePage(
-     int code_page,              /* code page number */
-     PyObject *unicode,          /* Unicode object */
-     const char *errors          /* error handling */
-@@ -733,7 +733,7 @@
-    instead of being decoded. *str* must end with a null character but cannot
-    contain embedded null characters. */
- 
--PyAPI_FUNC(PyObject*) PyUnicode_DecodeLocaleAndSize(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeLocaleAndSize(
-     const char *str,
-     Py_ssize_t len,
-     const char *errors);
-@@ -741,7 +741,7 @@
- /* Similar to PyUnicode_DecodeLocaleAndSize(), but compute the string
-    length using strlen(). */
- 
--PyAPI_FUNC(PyObject*) PyUnicode_DecodeLocale(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeLocale(
-     const char *str,
-     const char *errors);
- 
-@@ -750,7 +750,7 @@
-    "surrogateescape" error handler is used. Return a bytes object. The string
-    cannot contain embedded null characters. */
- 
--PyAPI_FUNC(PyObject*) PyUnicode_EncodeLocale(
-+PyAPI_FUNC(uint64_t) PyUnicode_EncodeLocale(
-     PyObject *unicode,
-     const char *errors
+-    int code_page,              /* code page number */
+-    PyObject *unicode,          /* Unicode object */
+-    const char *errors          /* error handling */
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    PyAPI_FUNC(uint64_t) PyUnicode_EncodeCodePage(
++        int code_page,     /* code page number */
++        PyObject *unicode, /* Unicode object */
++        const char *errors /* error handling */
      );
-@@ -777,7 +777,7 @@
-    Use PyUnicode_DecodeFSDefaultAndSize() if the string length is known.
- */
+ #endif
+ 
+ #endif /* MS_WINDOWS */
+ 
+-/* --- Locale encoding --------------------------------------------------- */
++    /* --- Locale encoding --------------------------------------------------- */
+ 
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-/* Decode a string from the current locale encoding. The decoder is strict if
+-   *surrogateescape* is equal to zero, otherwise it uses the 'surrogateescape'
+-   error handler (PEP 383) to escape undecodable bytes. If a byte sequence can
+-   be decoded as a surrogate character and *surrogateescape* is not equal to
+-   zero, the byte sequence is escaped using the 'surrogateescape' error handler
+-   instead of being decoded. *str* must end with a null character but cannot
+-   contain embedded null characters. */
+-
+-PyAPI_FUNC(PyObject*) PyUnicode_DecodeLocaleAndSize(
+-    const char *str,
+-    Py_ssize_t len,
+-    const char *errors);
+-
+-/* Similar to PyUnicode_DecodeLocaleAndSize(), but compute the string
+-   length using strlen(). */
+-
+-PyAPI_FUNC(PyObject*) PyUnicode_DecodeLocale(
+-    const char *str,
+-    const char *errors);
+-
+-/* Encode a Unicode object to the current locale encoding. The encoder is
+-   strict is *surrogateescape* is equal to zero, otherwise the
+-   "surrogateescape" error handler is used. Return a bytes object. The string
+-   cannot contain embedded null characters. */
+-
+-PyAPI_FUNC(PyObject*) PyUnicode_EncodeLocale(
+-    PyObject *unicode,
+-    const char *errors
+-    );
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    /* Decode a string from the current locale encoding. The decoder is strict if
++       *surrogateescape* is equal to zero, otherwise it uses the 'surrogateescape'
++       error handler (PEP 383) to escape undecodable bytes. If a byte sequence can
++       be decoded as a surrogate character and *surrogateescape* is not equal to
++       zero, the byte sequence is escaped using the 'surrogateescape' error handler
++       instead of being decoded. *str* must end with a null character but cannot
++       contain embedded null characters. */
++
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeLocaleAndSize(
++        const char *str,
++        Py_ssize_t len,
++        const char *errors);
++
++    /* Similar to PyUnicode_DecodeLocaleAndSize(), but compute the string
++       length using strlen(). */
++
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeLocale(
++        const char *str,
++        const char *errors);
++
++    /* Encode a Unicode object to the current locale encoding. The encoder is
++       strict is *surrogateescape* is equal to zero, otherwise the
++       "surrogateescape" error handler is used. Return a bytes object. The string
++       cannot contain embedded null characters. */
++
++    PyAPI_FUNC(uint64_t) PyUnicode_EncodeLocale(
++        PyObject *unicode,
++        const char *errors);
+ #endif
+ 
+-/* --- File system encoding ---------------------------------------------- */
++    /* --- File system encoding ---------------------------------------------- */
+ 
+-/* ParseTuple converter: encode str objects to bytes using
+-   PyUnicode_EncodeFSDefault(); bytes objects are output as-is. */
++    /* ParseTuple converter: encode str objects to bytes using
++       PyUnicode_EncodeFSDefault(); bytes objects are output as-is. */
+ 
+-PyAPI_FUNC(int) PyUnicode_FSConverter(PyObject*, void*);
++    PyAPI_FUNC(int) PyUnicode_FSConverter(PyObject *, void *);
+ 
+-/* ParseTuple converter: decode bytes objects to unicode using
+-   PyUnicode_DecodeFSDefaultAndSize(); str objects are output as-is. */
++    /* ParseTuple converter: decode bytes objects to unicode using
++       PyUnicode_DecodeFSDefaultAndSize(); str objects are output as-is. */
+ 
+-PyAPI_FUNC(int) PyUnicode_FSDecoder(PyObject*, void*);
++    PyAPI_FUNC(int) PyUnicode_FSDecoder(PyObject *, void *);
+ 
+-/* Decode a null-terminated string using Py_FileSystemDefaultEncoding
+-   and the "surrogateescape" error handler.
++    /* Decode a null-terminated string using Py_FileSystemDefaultEncoding
++       and the "surrogateescape" error handler.
+ 
+-   If Py_FileSystemDefaultEncoding is not set, fall back to the locale
+-   encoding.
++       If Py_FileSystemDefaultEncoding is not set, fall back to the locale
++       encoding.
+ 
+-   Use PyUnicode_DecodeFSDefaultAndSize() if the string length is known.
+-*/
++       Use PyUnicode_DecodeFSDefaultAndSize() if the string length is known.
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeFSDefault(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeFSDefault(
-     const char *s               /* encoded string */
+-    const char *s               /* encoded string */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeFSDefault(
++        const char *s /* encoded string */
      );
  
-@@ -788,7 +788,7 @@
-    encoding.
- */
+-/* Decode a string using Py_FileSystemDefaultEncoding
+-   and the "surrogateescape" error handler.
++    /* Decode a string using Py_FileSystemDefaultEncoding
++       and the "surrogateescape" error handler.
+ 
+-   If Py_FileSystemDefaultEncoding is not set, fall back to the locale
+-   encoding.
+-*/
++       If Py_FileSystemDefaultEncoding is not set, fall back to the locale
++       encoding.
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_DecodeFSDefaultAndSize(
-+PyAPI_FUNC(uint64_t) PyUnicode_DecodeFSDefaultAndSize(
-     const char *s,               /* encoded string */
-     Py_ssize_t size              /* size */
+-    const char *s,               /* encoded string */
+-    Py_ssize_t size              /* size */
++    PyAPI_FUNC(uint64_t) PyUnicode_DecodeFSDefaultAndSize(
++        const char *s,  /* encoded string */
++        Py_ssize_t size /* size */
      );
-@@ -800,7 +800,7 @@
-    encoding.
- */
+ 
+-/* Encode a Unicode object to Py_FileSystemDefaultEncoding with the
+-   "surrogateescape" error handler, and return bytes.
++    /* Encode a Unicode object to Py_FileSystemDefaultEncoding with the
++       "surrogateescape" error handler, and return bytes.
+ 
+-   If Py_FileSystemDefaultEncoding is not set, fall back to the locale
+-   encoding.
+-*/
++       If Py_FileSystemDefaultEncoding is not set, fall back to the locale
++       encoding.
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_EncodeFSDefault(
-+PyAPI_FUNC(uint64_t) PyUnicode_EncodeFSDefault(
-     PyObject *unicode
-     );
+-    PyObject *unicode
+-    );
++    PyAPI_FUNC(uint64_t) PyUnicode_EncodeFSDefault(
++        PyObject *unicode);
  
-@@ -812,7 +812,7 @@
+-/* --- Methods & Slots ----------------------------------------------------
++    /* --- Methods & Slots ----------------------------------------------------
  
- /* Concat two strings giving a new Unicode string. */
+-   These are capable of handling Unicode objects and strings on input
+-   (we refer to them as strings in the descriptions) and return
+-   Unicode objects or integers as appropriate. */
++       These are capable of handling Unicode objects and strings on input
++       (we refer to them as strings in the descriptions) and return
++       Unicode objects or integers as appropriate. */
+ 
+-/* Concat two strings giving a new Unicode string. */
++    /* Concat two strings giving a new Unicode string. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_Concat(
-+PyAPI_FUNC(uint64_t) PyUnicode_Concat(
-     PyObject *left,             /* Left string */
-     PyObject *right             /* Right string */
+-    PyObject *left,             /* Left string */
+-    PyObject *right             /* Right string */
++    PyAPI_FUNC(uint64_t) PyUnicode_Concat(
++        PyObject *left, /* Left string */
++        PyObject *right /* Right string */
      );
-@@ -844,7 +844,7 @@
  
- */
+-/* Concat two strings and put the result in *pleft
+-   (sets *pleft to NULL on error) */
++    /* Concat two strings and put the result in *pleft
++       (sets *pleft to NULL on error) */
+ 
+-PyAPI_FUNC(void) PyUnicode_Append(
+-    PyObject **pleft,           /* Pointer to left string */
+-    PyObject *right             /* Right string */
++    PyAPI_FUNC(void) PyUnicode_Append(
++        PyObject **pleft, /* Pointer to left string */
++        PyObject *right   /* Right string */
+     );
+ 
+-/* Concat two strings, put the result in *pleft and drop the right object
+-   (sets *pleft to NULL on error) */
++    /* Concat two strings, put the result in *pleft and drop the right object
++       (sets *pleft to NULL on error) */
+ 
+-PyAPI_FUNC(void) PyUnicode_AppendAndDel(
+-    PyObject **pleft,           /* Pointer to left string */
+-    PyObject *right             /* Right string */
++    PyAPI_FUNC(void) PyUnicode_AppendAndDel(
++        PyObject **pleft, /* Pointer to left string */
++        PyObject *right   /* Right string */
+     );
+ 
+-/* Split a string giving a list of Unicode strings.
++    /* Split a string giving a list of Unicode strings.
+ 
+-   If sep is NULL, splitting will be done at all whitespace
+-   substrings. Otherwise, splits occur at the given separator.
++       If sep is NULL, splitting will be done at all whitespace
++       substrings. Otherwise, splits occur at the given separator.
+ 
+-   At most maxsplit splits will be done. If negative, no limit is set.
++       At most maxsplit splits will be done. If negative, no limit is set.
+ 
+-   Separators are not included in the resulting list.
++       Separators are not included in the resulting list.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_Split(
-+PyAPI_FUNC(uint64_t) PyUnicode_Split(
-     PyObject *s,                /* String to split */
-     PyObject *sep,              /* String separator */
-     Py_ssize_t maxsplit         /* Maxsplit count */
-@@ -855,14 +855,14 @@
-    CRLF is considered to be one line break. Line breaks are not
-    included in the resulting list. */
+-    PyObject *s,                /* String to split */
+-    PyObject *sep,              /* String separator */
+-    Py_ssize_t maxsplit         /* Maxsplit count */
++    PyAPI_FUNC(uint64_t) PyUnicode_Split(
++        PyObject *s,        /* String to split */
++        PyObject *sep,      /* String separator */
++        Py_ssize_t maxsplit /* Maxsplit count */
+     );
+ 
+-/* Dito, but split at line breaks.
++    /* Dito, but split at line breaks.
+ 
+-   CRLF is considered to be one line break. Line breaks are not
+-   included in the resulting list. */
++       CRLF is considered to be one line break. Line breaks are not
++       included in the resulting list. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_Splitlines(
-+PyAPI_FUNC(uint64_t) PyUnicode_Splitlines(
-     PyObject *s,                /* String to split */
-     int keepends                /* If true, line end markers are included */
+-    PyObject *s,                /* String to split */
+-    int keepends                /* If true, line end markers are included */
++    PyAPI_FUNC(uint64_t) PyUnicode_Splitlines(
++        PyObject *s, /* String to split */
++        int keepends /* If true, line end markers are included */
      );
  
- /* Partition a string using a given separator. */
+-/* Partition a string using a given separator. */
++    /* Partition a string using a given separator. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_Partition(
-+PyAPI_FUNC(uint64_t) PyUnicode_Partition(
-     PyObject *s,                /* String to partition */
-     PyObject *sep               /* String separator */
+-    PyObject *s,                /* String to partition */
+-    PyObject *sep               /* String separator */
++    PyAPI_FUNC(uint64_t) PyUnicode_Partition(
++        PyObject *s,  /* String to partition */
++        PyObject *sep /* String separator */
      );
-@@ -870,7 +870,7 @@
- /* Partition a string using a given separator, searching from the end of the
-    string. */
+ 
+-/* Partition a string using a given separator, searching from the end of the
+-   string. */
++    /* Partition a string using a given separator, searching from the end of the
++       string. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_RPartition(
-+PyAPI_FUNC(uint64_t) PyUnicode_RPartition(
-     PyObject *s,                /* String to partition */
-     PyObject *sep               /* String separator */
+-    PyObject *s,                /* String to partition */
+-    PyObject *sep               /* String separator */
++    PyAPI_FUNC(uint64_t) PyUnicode_RPartition(
++        PyObject *s,  /* String to partition */
++        PyObject *sep /* String separator */
      );
-@@ -888,7 +888,7 @@
  
- */
+-/* Split a string giving a list of Unicode strings.
++    /* Split a string giving a list of Unicode strings.
+ 
+-   If sep is NULL, splitting will be done at all whitespace
+-   substrings. Otherwise, splits occur at the given separator.
++       If sep is NULL, splitting will be done at all whitespace
++       substrings. Otherwise, splits occur at the given separator.
+ 
+-   At most maxsplit splits will be done. But unlike PyUnicode_Split
+-   PyUnicode_RSplit splits from the end of the string. If negative,
+-   no limit is set.
++       At most maxsplit splits will be done. But unlike PyUnicode_Split
++       PyUnicode_RSplit splits from the end of the string. If negative,
++       no limit is set.
+ 
+-   Separators are not included in the resulting list.
++       Separators are not included in the resulting list.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_RSplit(
-+PyAPI_FUNC(uint64_t) PyUnicode_RSplit(
-     PyObject *s,                /* String to split */
-     PyObject *sep,              /* String separator */
-     Py_ssize_t maxsplit         /* Maxsplit count */
-@@ -906,7 +906,7 @@
+-    PyObject *s,                /* String to split */
+-    PyObject *sep,              /* String separator */
+-    Py_ssize_t maxsplit         /* Maxsplit count */
++    PyAPI_FUNC(uint64_t) PyUnicode_RSplit(
++        PyObject *s,        /* String to split */
++        PyObject *sep,      /* String separator */
++        Py_ssize_t maxsplit /* Maxsplit count */
+     );
  
- */
+-/* Translate a string by applying a character mapping table to it and
+-   return the resulting Unicode object.
++    /* Translate a string by applying a character mapping table to it and
++       return the resulting Unicode object.
+ 
+-   The mapping table must map Unicode ordinal integers to Unicode strings,
+-   Unicode ordinal integers or None (causing deletion of the character).
++       The mapping table must map Unicode ordinal integers to Unicode strings,
++       Unicode ordinal integers or None (causing deletion of the character).
+ 
+-   Mapping tables may be dictionaries or sequences. Unmapped character
+-   ordinals (ones which cause a LookupError) are left untouched and
+-   are copied as-is.
++       Mapping tables may be dictionaries or sequences. Unmapped character
++       ordinals (ones which cause a LookupError) are left untouched and
++       are copied as-is.
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject *) PyUnicode_Translate(
-+PyAPI_FUNC(uint64_t) PyUnicode_Translate(
-     PyObject *str,              /* String */
-     PyObject *table,            /* Translate table */
-     const char *errors          /* error handling */
-@@ -915,7 +915,7 @@
- /* Join a sequence of strings using the given separator and return
-    the resulting Unicode string. */
+-    PyObject *str,              /* String */
+-    PyObject *table,            /* Translate table */
+-    const char *errors          /* error handling */
++    PyAPI_FUNC(uint64_t) PyUnicode_Translate(
++        PyObject *str,     /* String */
++        PyObject *table,   /* Translate table */
++        const char *errors /* error handling */
+     );
+ 
+-/* Join a sequence of strings using the given separator and return
+-   the resulting Unicode string. */
++    /* Join a sequence of strings using the given separator and return
++       the resulting Unicode string. */
  
 -PyAPI_FUNC(PyObject*) PyUnicode_Join(
-+PyAPI_FUNC(uint64_t) PyUnicode_Join(
-     PyObject *separator,        /* Separator string */
-     PyObject *seq               /* Sequence object */
+-    PyObject *separator,        /* Separator string */
+-    PyObject *seq               /* Sequence object */
++    PyAPI_FUNC(uint64_t) PyUnicode_Join(
++        PyObject *separator, /* Separator string */
++        PyObject *seq        /* Sequence object */
      );
-@@ -966,7 +966,7 @@
- /* Replace at most maxcount occurrences of substr in str with replstr
-    and return the resulting Unicode object. */
+ 
+-/* Return 1 if substr matches str[start:end] at the given tail end, 0
+-   otherwise. */
++    /* Return 1 if substr matches str[start:end] at the given tail end, 0
++       otherwise. */
+ 
+-PyAPI_FUNC(Py_ssize_t) PyUnicode_Tailmatch(
+-    PyObject *str,              /* String */
+-    PyObject *substr,           /* Prefix or Suffix string */
+-    Py_ssize_t start,           /* Start index */
+-    Py_ssize_t end,             /* Stop index */
+-    int direction               /* Tail end: -1 prefix, +1 suffix */
++    PyAPI_FUNC(Py_ssize_t) PyUnicode_Tailmatch(
++        PyObject *str,    /* String */
++        PyObject *substr, /* Prefix or Suffix string */
++        Py_ssize_t start, /* Start index */
++        Py_ssize_t end,   /* Stop index */
++        int direction     /* Tail end: -1 prefix, +1 suffix */
+     );
+ 
+-/* Return the first position of substr in str[start:end] using the
+-   given search direction or -1 if not found. -2 is returned in case
+-   an error occurred and an exception is set. */
++    /* Return the first position of substr in str[start:end] using the
++       given search direction or -1 if not found. -2 is returned in case
++       an error occurred and an exception is set. */
+ 
+-PyAPI_FUNC(Py_ssize_t) PyUnicode_Find(
+-    PyObject *str,              /* String */
+-    PyObject *substr,           /* Substring to find */
+-    Py_ssize_t start,           /* Start index */
+-    Py_ssize_t end,             /* Stop index */
+-    int direction               /* Find direction: +1 forward, -1 backward */
++    PyAPI_FUNC(Py_ssize_t) PyUnicode_Find(
++        PyObject *str,    /* String */
++        PyObject *substr, /* Substring to find */
++        Py_ssize_t start, /* Start index */
++        Py_ssize_t end,   /* Stop index */
++        int direction     /* Find direction: +1 forward, -1 backward */
+     );
+ 
+-#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+-/* Like PyUnicode_Find, but search for single character only. */
+-PyAPI_FUNC(Py_ssize_t) PyUnicode_FindChar(
+-    PyObject *str,
+-    Py_UCS4 ch,
+-    Py_ssize_t start,
+-    Py_ssize_t end,
+-    int direction
+-    );
++#if !defined(Py_LIMITED_API) || Py_LIMITED_API + 0 >= 0x03030000
++    /* Like PyUnicode_Find, but search for single character only. */
++    PyAPI_FUNC(Py_ssize_t) PyUnicode_FindChar(
++        PyObject *str,
++        Py_UCS4 ch,
++        Py_ssize_t start,
++        Py_ssize_t end,
++        int direction);
+ #endif
+ 
+-/* Count the number of occurrences of substr in str[start:end]. */
++    /* Count the number of occurrences of substr in str[start:end]. */
+ 
+-PyAPI_FUNC(Py_ssize_t) PyUnicode_Count(
+-    PyObject *str,              /* String */
+-    PyObject *substr,           /* Substring to count */
+-    Py_ssize_t start,           /* Start index */
+-    Py_ssize_t end              /* Stop index */
++    PyAPI_FUNC(Py_ssize_t) PyUnicode_Count(
++        PyObject *str,    /* String */
++        PyObject *substr, /* Substring to count */
++        Py_ssize_t start, /* Start index */
++        Py_ssize_t end    /* Stop index */
+     );
+ 
+-/* Replace at most maxcount occurrences of substr in str with replstr
+-   and return the resulting Unicode object. */
++    /* Replace at most maxcount occurrences of substr in str with replstr
++       and return the resulting Unicode object. */
  
 -PyAPI_FUNC(PyObject *) PyUnicode_Replace(
-+PyAPI_FUNC(uint64_t) PyUnicode_Replace(
-     PyObject *str,              /* String */
-     PyObject *substr,           /* Substring to find */
-     PyObject *replstr,          /* Substring to replace */
-@@ -1006,7 +1006,7 @@
+-    PyObject *str,              /* String */
+-    PyObject *substr,           /* Substring to find */
+-    PyObject *replstr,          /* Substring to replace */
+-    Py_ssize_t maxcount         /* Max. number of replacements to apply;
+-                                   -1 = all */
++    PyAPI_FUNC(uint64_t) PyUnicode_Replace(
++        PyObject *str,      /* String */
++        PyObject *substr,   /* Substring to find */
++        PyObject *replstr,  /* Substring to replace */
++        Py_ssize_t maxcount /* Max. number of replacements to apply;
++                               -1 = all */
+     );
  
- */
+-/* Compare two strings and return -1, 0, 1 for less than, equal,
+-   greater than resp.
+-   Raise an exception and return -1 on error. */
++    /* Compare two strings and return -1, 0, 1 for less than, equal,
++       greater than resp.
++       Raise an exception and return -1 on error. */
+ 
+-PyAPI_FUNC(int) PyUnicode_Compare(
+-    PyObject *left,             /* Left string */
+-    PyObject *right             /* Right string */
++    PyAPI_FUNC(int) PyUnicode_Compare(
++        PyObject *left, /* Left string */
++        PyObject *right /* Right string */
+     );
+ 
+-/* Compare a Unicode object with C string and return -1, 0, 1 for less than,
+-   equal, and greater than, respectively.  It is best to pass only
+-   ASCII-encoded strings, but the function interprets the input string as
+-   ISO-8859-1 if it contains non-ASCII characters.
+-   This function does not raise exceptions. */
++    /* Compare a Unicode object with C string and return -1, 0, 1 for less than,
++       equal, and greater than, respectively.  It is best to pass only
++       ASCII-encoded strings, but the function interprets the input string as
++       ISO-8859-1 if it contains non-ASCII characters.
++       This function does not raise exceptions. */
+ 
+-PyAPI_FUNC(int) PyUnicode_CompareWithASCIIString(
+-    PyObject *left,
+-    const char *right           /* ASCII-encoded string */
++    PyAPI_FUNC(int) PyUnicode_CompareWithASCIIString(
++        PyObject *left,
++        const char *right /* ASCII-encoded string */
+     );
+ 
+-/* Rich compare two strings and return one of the following:
++    /* Rich compare two strings and return one of the following:
+ 
+-   - NULL in case an exception was raised
+-   - Py_True or Py_False for successful comparisons
+-   - Py_NotImplemented in case the type combination is unknown
++       - NULL in case an exception was raised
++       - Py_True or Py_False for successful comparisons
++       - Py_NotImplemented in case the type combination is unknown
+ 
+-   Possible values for op:
++       Possible values for op:
+ 
+-     Py_GT, Py_GE, Py_EQ, Py_NE, Py_LT, Py_LE
++         Py_GT, Py_GE, Py_EQ, Py_NE, Py_LT, Py_LE
+ 
+-*/
++    */
  
 -PyAPI_FUNC(PyObject *) PyUnicode_RichCompare(
-+PyAPI_FUNC(uint64_t) PyUnicode_RichCompare(
-     PyObject *left,             /* Left string */
-     PyObject *right,            /* Right string */
-     int op                      /* Operation: Py_EQ, Py_NE, Py_GT, etc. */
-@@ -1015,7 +1015,7 @@
- /* Apply an argument tuple or dictionary to a format string and return
-    the resulting Unicode string. */
+-    PyObject *left,             /* Left string */
+-    PyObject *right,            /* Right string */
+-    int op                      /* Operation: Py_EQ, Py_NE, Py_GT, etc. */
++    PyAPI_FUNC(uint64_t) PyUnicode_RichCompare(
++        PyObject *left,  /* Left string */
++        PyObject *right, /* Right string */
++        int op           /* Operation: Py_EQ, Py_NE, Py_GT, etc. */
+     );
+ 
+-/* Apply an argument tuple or dictionary to a format string and return
+-   the resulting Unicode string. */
++    /* Apply an argument tuple or dictionary to a format string and return
++       the resulting Unicode string. */
  
 -PyAPI_FUNC(PyObject *) PyUnicode_Format(
-+PyAPI_FUNC(uint64_t) PyUnicode_Format(
-     PyObject *format,           /* Format string */
-     PyObject *args              /* Argument tuple or dictionary */
+-    PyObject *format,           /* Format string */
+-    PyObject *args              /* Argument tuple or dictionary */
++    PyAPI_FUNC(uint64_t) PyUnicode_Format(
++        PyObject *format, /* Format string */
++        PyObject *args    /* Argument tuple or dictionary */
      );
+ 
+-/* Checks whether element is contained in container and return 1/0
+-   accordingly.
++    /* Checks whether element is contained in container and return 1/0
++       accordingly.
+ 
+-   element has to coerce to a one element Unicode string. -1 is
+-   returned in case of an error. */
++       element has to coerce to a one element Unicode string. -1 is
++       returned in case of an error. */
+ 
+-PyAPI_FUNC(int) PyUnicode_Contains(
+-    PyObject *container,        /* Container string */
+-    PyObject *element           /* Element string */
++    PyAPI_FUNC(int) PyUnicode_Contains(
++        PyObject *container, /* Container string */
++        PyObject *element    /* Element string */
+     );
+ 
+-/* Checks whether argument is a valid identifier. */
++    /* Checks whether argument is a valid identifier. */
+ 
+-PyAPI_FUNC(int) PyUnicode_IsIdentifier(PyObject *s);
++    PyAPI_FUNC(int) PyUnicode_IsIdentifier(PyObject *s);
+ 
+-/* === Characters Type APIs =============================================== */
++    /* === Characters Type APIs =============================================== */
+ 
+ #ifndef Py_LIMITED_API
+-#  define Py_CPYTHON_UNICODEOBJECT_H
+-#  include "cpython/unicodeobject.h"
+-#  undef Py_CPYTHON_UNICODEOBJECT_H
++#define Py_CPYTHON_UNICODEOBJECT_H
++#include "cpython/unicodeobject.h"
++#undef Py_CPYTHON_UNICODEOBJECT_H
+ #endif
+ 
+ #ifdef __cplusplus
 --- weakrefobject.h
 +++ weakrefobject.h
 @@ -23,11 +23,11 @@
