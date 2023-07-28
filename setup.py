@@ -16,7 +16,7 @@ def recurse_files(directory):
 
 setuptools.setup(
     name="wasmpy-build",
-    version="0.4.0",
+    version="0.4.1",
     author="Olivia Ryan",
     author_email="olivia.r.dev@gmail.com",
     description="WebAssembly build tool for CPython C extensions",
@@ -28,7 +28,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "wasmpy-build=wasmpy_build:buildc",
-            "wasmpy-build++=wasmpy_build:buidcpp",
+            "wasmpy-build++=wasmpy_build:buildcpp",
         ]
     },
     classifiers=[
