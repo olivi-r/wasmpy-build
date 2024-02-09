@@ -1,6 +1,10 @@
 image:
   - Ubuntu
 
+environment:
+  PYPI_TOKEN:
+    secure: Ej5+0zxoEbzldGFB9gEbEOI81xpoxi+qk2FG5O2JKnw+9seQfRf9iudWM/98pLE2/vi/KkvrGOidtbz3cS3w/ZmtfZiQf/Tp5sG8YlL21oDdRMMW/EZIc049XvAOTsnb2fAziS19I/UNPFpu/Dzo1Xo/KNax5WuX66zWZFJ2P0oFw0Wv36D9aHpfm4IYEHGewVGZMpvXk993HOOZdeZt0uG02zU85EG08EGP092zDp6SL3WsyVZ7YtJn3Lk3W+7c6BKoKG8sKYn61MLi9J9kEQ==
+
 stack: python 3.8
 
 install:
@@ -12,3 +16,22 @@ build_script: python generate.py && python -m build
 
 artifacts:
   - path: "dist\\*"
+
+deploy:
+  description: ""
+  provider: GitHub
+  auth_token:
+    secure: atWS2pKyihyRyTzMopS3FzlG+VT/r3fx5pk+7E2BwvyxdAGiSmH/pDXPBIPArdW0
+  artifact: /.*\.(whl|tar\.gz)/
+  draft: false
+  on:
+    branch: main
+    APPVEYOR_REPO_TAG: true
+
+after_deploy:
+  - ps: |
+      if ($env:APPVEYOR_REPO_TAG -eq 'true')
+      {
+        python -m pip install twine
+        python -m twine upload -u __token__ -p ${env:PYPI_TOKEN} --skip-existing dist/*
+      }
