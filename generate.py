@@ -12,7 +12,7 @@ versions = {
 }
 
 
-shutil.rmtree("wasmpy_build/include")
+shutil.rmtree("wasmpy_build/include", ignore_errors=True)
 
 for version in versions:
     version_tag = "cp" + "".join(version.split("."))
