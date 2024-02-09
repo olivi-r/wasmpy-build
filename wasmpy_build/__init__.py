@@ -1,5 +1,13 @@
-import os, platform, shutil, subprocess, sys, tarfile
-import appdirs, requests, tqdm
+import os
+import platform
+import shutil
+import subprocess
+import sys
+import tarfile
+
+import appdirs
+import requests
+import tqdm
 
 
 sdk_dir = os.path.join(appdirs.user_data_dir("wasmpy-build", "wasmpy"))
@@ -12,9 +20,7 @@ def download_sdk(before=None):
     except FileExistsError:
         pass
 
-    url = (
-        "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/"
-    )
+    url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/"
     if platform.system() == "Windows":
         file = "wasi-sdk-20.0.m-mingw.tar.gz"
 
