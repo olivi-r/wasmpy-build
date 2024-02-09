@@ -1,0 +1,14 @@
+image:
+  - Ubuntu
+
+stack: python 3.8
+
+install:
+  - git submodule init
+  - git submodule update
+  - python -m pip install build
+
+build_script: python generate.py && python -m build
+
+artifacts:
+  - path: "dist\\*"
