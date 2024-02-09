@@ -2,7 +2,7 @@
 
 This tool can compile CPython C extension files, such as the ones created by Cython, to WebAssembly so that the extensions are platform independent.
 
-Currently this project only supports CPython 3.8, 3.9, 3.10, 3.11 and 3.12 but I'm hoping to add support for older and future versions.
+This project supports CPython 3.6 to 3.12.
 
 The project will automatically download [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) on first use.
 
