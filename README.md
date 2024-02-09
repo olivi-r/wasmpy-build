@@ -36,5 +36,5 @@ wasmpy-build my_file.c -o my_file.wasm
 ### C++
 
 ```bash
-wasmpy-build++ my_file.cpp -o my_file.wasm
+wasmpy-build-cpp my_file.cpp -o my_file.wasm
 ```
