@@ -4,6 +4,8 @@ import subprocess
 
 # current tags for versions
 versions = {
+    "3.6": "v3.6.15",
+    "3.7": "v3.7.17",
     "3.8": "v3.8.18",
     "3.9": "v3.9.18",
     "3.10": "v3.10.13",
