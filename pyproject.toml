@@ -16,6 +16,8 @@ classifiers = [
     "Programming Language :: C",
     "Programming Language :: C++",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -34,9 +36,14 @@ dependencies = [
 requires-python = ">= 3.6"
 dynamic = ["version"]
 
+[project.urls]
+"Homepage" = "https://github.com/olivi-r/wasmpy-build"
+"Bug Tracker" = "https://github.com/olivi-r/wasmpy-build/issues"
+
 [project.scripts]
 wasmpy-build = "wasmpy_build:buildc"
 wasmpy-build-cpp = "wasmpy_build:buildcpp"
+"wasmpy-build++" = "wasmpy_build:buildcpp"
 
 [tool.setuptools]
 packages = ["wasmpy_build"]
