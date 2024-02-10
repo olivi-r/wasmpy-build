@@ -20,12 +20,12 @@ def download_sdk(before=None):
     except FileExistsError:
         pass
 
-    url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/"
+    url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-21/"
     if platform.system() == "Windows":
-        file = "wasi-sdk-20.0.m-mingw.tar.gz"
+        file = "wasi-sdk-21.0.m-mingw.tar.gz"
 
     elif platform.system() == "Linux":
-        file = "wasi-sdk-20.0-linux.tar.gz"
+        file = "wasi-sdk-21.0-linux.tar.gz"
 
     url += file
     if not os.path.exists(os.path.join(sdk_dir, file)):
