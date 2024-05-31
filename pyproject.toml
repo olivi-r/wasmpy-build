@@ -1,49 +1,49 @@
 [build-system]
 requires = [
-    "setuptools >= 60",
-    "setuptools-scm >= 8.0"
+  "setuptools >= 60",
+  "setuptools-scm >= 8.0",
 ]
 
 [project]
-name = "wasmpy-build"
-description = "WebAssembly build tool for CPython C/C++ extensions"
-readme = "README.md"
-license = {file = "LICENSE"}
 authors = [
-    {name = "Olivia Ryan", email = "olivia.r.dev@gmail.com"},
+  {name = "Olivia Ryan", email = "olivia.r.dev@gmail.com"},
 ]
 classifiers = [
-    "Programming Language :: C",
-    "Programming Language :: C++",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Environment :: WebAssembly",
-    "Environment :: WebAssembly :: WASI",
-    "License :: OSI Approved :: MIT License",
+  "Programming Language :: C",
+  "Programming Language :: C++",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Environment :: WebAssembly",
+  "Environment :: WebAssembly :: WASI",
+  "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "appdirs",
-    "requests",
-    "tqdm",
+  "appdirs",
+  "requests",
+  "tqdm",
 ]
-requires-python = ">= 3.6"
+description = "WebAssembly build tool for CPython C/C++ extensions"
 dynamic = ["version"]
+license = {file = "LICENSE"}
+name = "wasmpy-build"
+readme = "README.md"
+requires-python = ">= 3.6"
 
 [project.urls]
-"Homepage" = "https://github.com/olivi-r/wasmpy-build"
-"Bug Tracker" = "https://github.com/olivi-r/wasmpy-build/issues"
+"Issues" = "https://github.com/olivi-r/wasmpy-build/issues"
+"Repository" = "https://github.com/olivi-r/wasmpy-build"
 
 [project.scripts]
-wasmpy-build = "wasmpy_build:buildc"
-wasmpy-build-cpp = "wasmpy_build:buildcpp"
-"wasmpy-build++" = "wasmpy_build:buildcpp"
+wasmpy-build = "wasmpy_build.cli:buildc"
+"wasmpy-build++" = "wasmpy_build.cli:buildcpp"
+wasmpy-build-cpp = "wasmpy_build.cli:buildcpp"
 
 [tool.setuptools]
 packages = ["wasmpy_build"]
