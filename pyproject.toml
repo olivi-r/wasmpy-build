@@ -27,6 +27,7 @@ classifiers = [
 dependencies = [
   "appdirs",
   "requests",
+  "setuptools >= 66.1.0",
   "tqdm",
 ]
 description = "WebAssembly build tool for CPython C/C++ extensions"
