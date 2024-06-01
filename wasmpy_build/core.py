@@ -1,3 +1,4 @@
+import json
 import pathlib
 import platform
 import shutil
@@ -10,20 +11,22 @@ import requests
 import tqdm
 
 
-# configure include and compiler paths
-
-CPYTHON_INCLUDE_DIR = pathlib.Path(__file__).parent / "include" / "cp" + "".join(
-    str(i) for i in sys.version_info[:2]
-)
-
 WASI_SDK = pathlib.Path(appdirs.user_data_dir("wasmpy-build", "wasmpy")) / "wasi-sdk"
+
+# configure include and compiler paths
+CPYTHON_INCLUDE_DIR = (
+    pathlib.Path(__file__).parent
+    / "include"
+    / ("cp" + "".join(str(i) for i in sys.version_info[:2]))
+)
 
 CC = WASI_SDK / "bin" / "wasm32-wasip1-threads-clang"
 CXX = WASI_SDK / "bin" / "wasm32-wasip1-threads-clang++"
-
+if platform.system() == "Windows":
+    CC = CC.parent / (CC.name + ".exe")
+    CXX = CXX.parent / (CXX.name + ".exe")
 
 # default compiler options
-
 DEFAULT_OPTS = [
     "-pthread",
     "-O2",
@@ -35,20 +38,20 @@ DEFAULT_OPTS = [
 
 
 def build(options, is_cpp=False):
-    cmd = [CXX if is_cpp else CC] + DEFAULT_OPTS + options
+    cmd = [CXX if is_cpp else CC]
+    if not cmd[0].exists():
+        download_sdk()
 
-    print(" ".join(cmd))
-    try:
-        subprocess.call(cmd)
+    cmd += DEFAULT_OPTS + options
 
-    except FileNotFoundError:
-        print("wasi-sdk not found")
-        download_sdk(build, options, is_cpp)
+    print(" ".join(map(str, cmd)))
+    subprocess.call(cmd)
 
 
-def download_sdk(before=None, *before_args):
-    WASI_SDK.mkdir(parents=True, exist_ok=True)
+def download_sdk():
+    WASI_SDK.parent.mkdir(parents=True, exist_ok=True)
 
+    # get download URL
     url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-22/"
     if platform.system() == "Windows":
         file = "wasi-sdk-22.0.m-mingw64.tar.gz"
@@ -57,6 +60,8 @@ def download_sdk(before=None, *before_args):
         file = "wasi-sdk-22.0-linux.tar.gz"
 
     url += file
+
+    # download the SDK
     if not (WASI_SDK.parent / file).exists():
         print(f"Downloading {file}")
         with requests.get(url, stream=True) as req:
@@ -72,17 +77,27 @@ def download_sdk(before=None, *before_args):
                 for chunk in req.iter_content(4096):
                     progress.update(fp.write(chunk))
 
+    # extract the SDK tarball
     print(f"Extracting {file}")
     with tarfile.open(WASI_SDK.parent / file) as tar:
         extracted = tar.getnames()[0]
-        tar.extractall(WASI_SDK)
+        tar.extractall(WASI_SDK.parent)
 
     shutil.move(WASI_SDK.parent / extracted, WASI_SDK)
 
-    # version file to avoid using outdated wasi-sdk
-    with open(WASI_SDK.parent / "wasi-sdk-version.txt", "w+") as fp:
-        fp.write("22")
+    # delete the tarball
+    (WASI_SDK.parent / file).unlink()
+
+    # version file to avoid using outdated SDKs
+    if (WASI_SDK.parent / "versions.json").exists():
+        with (WASI_SDK.parent / "versions.json").open("r") as fp:
+            versions = json.load(fp)
+
+    else:
+        versions = {}
+
+    versions.update({"wasi-sdk": 22})
+    with (WASI_SDK.parent / "versions.json").open("w+") as fp:
+        json.dump(versions, fp)
 
     print(f"wasi-sdk installed at: {WASI_SDK}")
-    if before is not None:
-        before(*before_args)
