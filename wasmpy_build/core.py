@@ -1,4 +1,4 @@
-import os
+import pathlib
 import platform
 import shutil
 import subprocess
@@ -10,61 +10,44 @@ import requests
 import tqdm
 
 
-# find cpython include files
+# configure include and compiler paths
 
-CPYTHON_INCLUDE_DIR = os.path.join(
-    os.path.dirname(__file__), "include", "cp"
-) + "".join(str(i) for i in sys.version_info[:2])
+CPYTHON_INCLUDE_DIR = pathlib.Path(__file__).parent / "include" / "cp" + "".join(
+    str(i) for i in sys.version_info[:2]
+)
 
-WASI_SDK_DIR = os.path.join(appdirs.user_data_dir("wasmpy-build", "wasmpy"))
+WASI_SDK = pathlib.Path(appdirs.user_data_dir("wasmpy-build", "wasmpy")) / "wasi-sdk"
+
+CC = WASI_SDK / "bin" / "wasm32-wasip1-threads-clang"
+CXX = WASI_SDK / "bin" / "wasm32-wasip1-threads-clang++"
 
 
-def buildc(options):
-    args = [
-        f"{WASI_SDK_DIR}/sdk-{platform.system()}/bin/clang",
-        f"--sysroot={WASI_SDK_DIR}/sdk-{platform.system()}/share/wasi-sysroot",
-        "--target=wasm32-wasi-threads",
-        "-pthread",
-        "-nostartfiles",
-        f"-I{CPYTHON_INCLUDE_DIR}",
-        "-Wl,--no-entry,-export-dynamic,--allow-undefined",
-    ] + options
+# default compiler options
 
-    print(" ".join(args))
+DEFAULT_OPTS = [
+    "-pthread",
+    "-O2",
+    "-Wall",
+    "-nostartfiles",
+    "-Wl,--no-entry,-export-dynamic,--allow-undefined",
+    f"-I{CPYTHON_INCLUDE_DIR}",
+]
+
+
+def build(options, is_cpp=False):
+    cmd = [CXX if is_cpp else CC] + DEFAULT_OPTS + options
+
+    print(" ".join(cmd))
     try:
-        subprocess.call(args)
+        subprocess.call(cmd)
 
     except FileNotFoundError:
         print("wasi-sdk not found")
-        download_sdk(buildc, options)
+        download_sdk(build, options, is_cpp)
 
 
-def buildcpp(options):
-    args = [
-        f"{WASI_SDK_DIR}/sdk-{platform.system()}/bin/clang++",
-        f"--sysroot={WASI_SDK_DIR}/sdk-{platform.system()}/share/wasi-sysroot",
-        "--target=wasm32-wasi-threads",
-        "-pthread",
-        "-nostartfiles",
-        f"-I{CPYTHON_INCLUDE_DIR}",
-        "-Wl,--no-entry,-export-dynamic,--allow-undefined",
-    ] + options
-
-    print(" ".join(args))
-    try:
-        subprocess.call(args)
-
-    except FileNotFoundError:
-        print("wasi-sdk not found")
-        download_sdk(buildcpp, options)
-
-
-def download_sdk(before=None, before_opts=[]):
-    try:
-        os.makedirs(WASI_SDK_DIR)
-
-    except FileExistsError:
-        pass
+def download_sdk(before=None, *before_args):
+    WASI_SDK.mkdir(parents=True, exist_ok=True)
 
     url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-22/"
     if platform.system() == "Windows":
@@ -74,12 +57,12 @@ def download_sdk(before=None, before_opts=[]):
         file = "wasi-sdk-22.0-linux.tar.gz"
 
     url += file
-    if not os.path.exists(os.path.join(WASI_SDK_DIR, file)):
+    if not (WASI_SDK.parent / file).exists():
         print(f"Downloading {file}")
         with requests.get(url, stream=True) as req:
             req.raise_for_status()
 
-            with open(os.path.join(WASI_SDK_DIR, file), "wb+") as fp, tqdm.tqdm(
+            with (WASI_SDK.parent / file).open("wb+") as fp, tqdm.tqdm(
                 desc=file,
                 total=int(req.headers.get("content-length", 0)),
                 unit="MiB",
@@ -90,15 +73,16 @@ def download_sdk(before=None, before_opts=[]):
                     progress.update(fp.write(chunk))
 
     print(f"Extracting {file}")
-    with tarfile.open(os.path.join(WASI_SDK_DIR, file)) as tar:
+    with tarfile.open(WASI_SDK.parent / file) as tar:
         extracted = tar.getnames()[0]
-        tar.extractall(WASI_SDK_DIR)
+        tar.extractall(WASI_SDK)
 
-    shutil.move(
-        os.path.join(WASI_SDK_DIR, extracted),
-        os.path.join(WASI_SDK_DIR, f"sdk-{platform.system()}"),
-    )
+    shutil.move(WASI_SDK.parent / extracted, WASI_SDK)
 
-    print(f"wasi-sdk installed at: {os.path.join(WASI_SDK_DIR, 'sdk')}")
+    # version file to avoid using outdated wasi-sdk
+    with open(WASI_SDK.parent / "wasi-sdk-version.txt", "w+") as fp:
+        fp.write("22")
+
+    print(f"wasi-sdk installed at: {WASI_SDK}")
     if before is not None:
-        before(before_opts)
+        before(*before_args)
