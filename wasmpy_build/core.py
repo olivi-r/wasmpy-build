@@ -36,6 +36,9 @@ DEFAULT_OPTS = [
     f"-I{CPYTHON_INCLUDE_DIR}",
 ]
 
+# library path
+WASI_LIB_DIR = WASI_SDK / "share" / "wasi-sysroot" / "lib" / "wasm32-wasip1-threads"
+
 
 def build(options, is_cpp=False):
     cmd = [CXX if is_cpp else CC]
