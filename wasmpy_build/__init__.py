@@ -5,11 +5,14 @@ from setuptools.command.build_ext import build_ext as setuptools_build_ext
 from setuptools._distutils.extension import Extension
 
 from .compiler import ClangWASICompiler
-from .core import CPYTHON_INCLUDE_DIR, WASI_LIB_DIR
+from .core import download_sdk, CPYTHON_INCLUDE_DIR, WASI_SDK, WASI_LIB_DIR
 
 
 class build_ext(setuptools_build_ext):
     def run(self):
+        if not WASI_SDK.exists():
+            download_sdk()
+
         ext = ".cp" + "".join(map(str, sys.version_info[:2]))
         ext += "-wasm32_wasip1_threads.wasm"
         os.environ["SETUPTOOLS_EXT_SUFFIX"] = ext
