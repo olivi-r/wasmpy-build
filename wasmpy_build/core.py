@@ -55,12 +55,12 @@ def download_sdk():
     WASI_SDK.parent.mkdir(parents=True, exist_ok=True)
 
     # get download URL
-    url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-22/"
+    url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-23/"
     if platform.system() == "Windows":
-        file = "wasi-sdk-22.0.m-mingw64.tar.gz"
+        file = "wasi-sdk-23.0-x86_64-windows.tar.gz"
 
     elif platform.system() == "Linux":
-        file = "wasi-sdk-22.0-linux.tar.gz"
+        file = "wasi-sdk-23.0-x86_64-linux.tar.gz"
 
     url += file
 
