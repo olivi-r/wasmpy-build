@@ -11,6 +11,10 @@ import requests
 import tqdm
 
 
+TARGET = "wasm32-wasip2"
+WASI_SDK_VERSION_MAJ = "33"
+WASI_SDK_VERSION_MIN = "0"
+
 WASI_SDK = pathlib.Path(appdirs.user_data_dir("wasmpy-build", "wasmpy")) / "wasi-sdk"
 
 # configure include and compiler paths
@@ -20,8 +24,8 @@ CPYTHON_INCLUDE_DIR = (
     / ("cp" + "".join(str(i) for i in sys.version_info[:2]))
 )
 
-CC = WASI_SDK / "bin" / "wasm32-wasip1-threads-clang"
-CXX = WASI_SDK / "bin" / "wasm32-wasip1-threads-clang++"
+CC = WASI_SDK / "bin" / f"{TARGET}-clang"
+CXX = WASI_SDK / "bin" / f"{TARGET}-clang++"
 if platform.system() == "Windows":
     CC = CC.parent / (CC.name + ".exe")
     CXX = CXX.parent / (CXX.name + ".exe")
@@ -37,7 +41,7 @@ DEFAULT_OPTS = [
 ]
 
 # library path
-WASI_LIB_DIR = WASI_SDK / "share" / "wasi-sysroot" / "lib" / "wasm32-wasip1-threads"
+WASI_LIB_DIR = WASI_SDK / "share" / "wasi-sysroot" / "lib" / TARGET
 
 
 def build(options, is_cpp=False):
@@ -55,12 +59,12 @@ def download_sdk():
     WASI_SDK.parent.mkdir(parents=True, exist_ok=True)
 
     # get download URL
-    url = "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-23/"
+    url = f"https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-{WASI_SDK_VERSION_MAJ}/"
     if platform.system() == "Windows":
-        file = "wasi-sdk-23.0-x86_64-windows.tar.gz"
+        file = f"wasi-sdk-{WASI_SDK_VERSION_MAJ}.{WASI_SDK_VERSION_MIN}-x86_64-windows.tar.gz"
 
     elif platform.system() == "Linux":
-        file = "wasi-sdk-23.0-x86_64-linux.tar.gz"
+        file = f"wasi-sdk-{WASI_SDK_VERSION_MAJ}.{WASI_SDK_VERSION_MIN}-x86_64-linux.tar.gz"
 
     url += file
 
@@ -99,7 +103,7 @@ def download_sdk():
     else:
         versions = {}
 
-    versions.update({"wasi-sdk": 22})
+    versions.update({"wasi-sdk": int(WASI_SDK_VERSION_MAJ)})
     with (WASI_SDK.parent / "versions.json").open("w+") as fp:
         json.dump(versions, fp)
 

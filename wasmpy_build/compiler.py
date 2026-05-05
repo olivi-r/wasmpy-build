@@ -1,7 +1,7 @@
 from setuptools._distutils.unixccompiler import UnixCCompiler
 from setuptools.errors import CompileError, ExecError
 
-from .core import WASI_SDK
+from .core import WASI_SDK, TARGET
 
 
 class ClangWASICompiler(UnixCCompiler):
@@ -15,8 +15,8 @@ class ClangWASICompiler(UnixCCompiler):
     def __init__(self, verbose=0, force=0):
         super().__init__(verbose, force)
 
-        self.cc = str(WASI_SDK / "bin" / "wasm32-wasip1-threads-clang")
-        self.cxx = str(WASI_SDK / "bin" / "wasm32-wasip1-threads-clang++")
+        self.cc = str(WASI_SDK / "bin" / f"{TARGET}-clang")
+        self.cxx = str(WASI_SDK / "bin" / f"{TARGET}-clang++")
         self.ld = str(WASI_SDK / "bin" / "wasm-ld")
 
         self.cc = self.cc.replace("\\", "/")
