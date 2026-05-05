@@ -40,7 +40,7 @@ class build_ext(setuptools_build_ext):
             self.library_dirs.append(build_clib.build_clib)
 
         # use clang compiler
-        self.compiler = ClangWASICompiler(None, self.dry_run, self.force)
+        self.compiler = ClangWASICompiler(None, self.force)
 
         if self.include_dirs is not None:
             self.compiler.set_include_dirs(self.include_dirs)

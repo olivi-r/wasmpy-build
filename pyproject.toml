@@ -1,13 +1,12 @@
 [build-system]
 requires = [
-  "setuptools >= 60",
+  "setuptools >= 82",
   "setuptools-scm >= 8.0",
 ]
 
 [project]
-authors = [
-  {name = "Olivia Ryan", email = "olivia.r.dev@gmail.com"},
-]
+name = "wasmpy-build"
+readme = "README.md"
 classifiers = [
   "Programming Language :: C",
   "Programming Language :: C++",
@@ -19,10 +18,11 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: CPython",
   "Environment :: WebAssembly",
   "Environment :: WebAssembly :: WASI",
-  "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
   "appdirs",
@@ -32,10 +32,14 @@ dependencies = [
 ]
 description = "WebAssembly build tool for CPython C/C++ extensions"
 dynamic = ["version"]
-license = {file = "LICENSE"}
-name = "wasmpy-build"
-readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">= 3.6"
+keywords = ["wasmpy", "webassembly", "wasm", "wasi"]
+
+[[project.authors]]
+name = "Olivia Ryan"
+email = "olivia.r.dev@gmail.com"
 
 [project.urls]
 "Issues" = "https://github.com/olivi-r/wasmpy-build/issues"

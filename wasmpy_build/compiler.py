@@ -12,8 +12,8 @@ class ClangWASICompiler(UnixCCompiler):
 
     _cxx_extensions = [".cpp", ".cc", ".cxx", ".c++"]
 
-    def __init__(self, verbose=0, dry_run=0, force=0):
-        super().__init__(verbose, dry_run, force)
+    def __init__(self, verbose=0, force=0):
+        super().__init__(verbose, force)
 
         self.cc = str(WASI_SDK / "bin" / "wasm32-wasip1-threads-clang")
         self.cxx = str(WASI_SDK / "bin" / "wasm32-wasip1-threads-clang++")
