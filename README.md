@@ -12,12 +12,32 @@ Currently supports CPython 3.6 to 3.12.
 
 Wasmpy-build can be easily integrated into an existing project by the use of a drop-in `build_ext` override:
 
+## From a `pyproject.toml` file
+
+This uses an experimental feature and may not work verbatim in the future.
+
+```toml
+[build-system]
+requires = ["setuptools", "wasmpy-build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# ...
+
+[tool.setuptools.cmdclass]
+build_ext = "wasmpy_build.build_ext"
+
+[[tool.setuptools.ext-modules]]
+name = "mymodule"
+sources = ["mymodule.c"]
+
+```
+
 ## From a `setup.py` script
 
 ```python
 from wasmpy_build import build_ext
 from setuptools import setup, Extension
-
 
 setup(
     ext_modules=[Extension("mymodule", ["mymodule.c"])],
